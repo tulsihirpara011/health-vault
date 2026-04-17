@@ -4,6 +4,7 @@ const { userSchema, updateUserSchema } = require("../validation/zodValidation");
 const { session: sessionTable } = require("../models/session");
 const { user } = require("../models/User");
 const { db } = require("../config/db");
+const { GeneralResponse } = require("../helpers/genralResponse");
 const userRepository = require("../repositories/userRepository");
 const messageConstant = require("../constant/messageConstant");
 const jwt = require("jsonwebtoken");
@@ -44,18 +45,15 @@ class userService {
         expiresIn: "7d",
       },
     );
-    return {
-      tempToken,
-    };
+    return tempToken;
   }
 
   //get user by id
   async getUserById(id) {
-    const result = await userRepository.getUserById(id);
+    return await userRepository.getUserById(id);
     if (!result) {
       throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
-    return result;
   }
 
   //get user list

@@ -1,6 +1,7 @@
 paths:
   /user/add:
     post:
+      security: []
       summary: Create user (Sign Up)
       tags:
         - User
