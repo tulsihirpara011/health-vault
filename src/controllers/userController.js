@@ -9,8 +9,8 @@ class userController {
       const result = await userService.loginUser(req.body);
       return GeneralResponse.created(
         res,
-        messageConstant.USER_LOGIN_SUCCESSFULLY,
         result,
+        messageConstant.USER_LOGIN_SUCCESSFULLY,
       );
     } catch (error) {
       console.log("error in login user:", error);
@@ -24,8 +24,8 @@ class userController {
       const result = await userService.createUser(req.body);
       return GeneralResponse.created(
         res,
-        messageConstant.USER_ADDED_SUCCESSFULLY,
         result,
+        messageConstant.USER_ADDED_SUCCESSFULLY,
       );
     } catch (error) {
       console.log("error in create user:", error);
@@ -46,8 +46,8 @@ class userController {
       const result = await userService.getUserById(req.params.id);
       return GeneralResponse.success(
         res,
-        messageConstant.USER_FETCHED_SUCCESSFULLY,
         result,
+        messageConstant.USER_FETCHED_SUCCESSFULLY,
       );
     } catch (error) {
       console.log("error in get user by id:", error);
