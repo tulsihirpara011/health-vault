@@ -18,7 +18,7 @@ const messageConstant = {
   USER_LOGIN_SUCCESSFULLY: "User Login Successfully",
   OTP_VERIFIED: "OTP is verified",
   USER_BLOCKED: "User Blocked",
-  EMAIL_VERIFY_SUCCESSFULLY:"Email is verified successfully",
+  EMAIL_VERIFY_SUCCESSFULLY: "Email is verified successfully",
 
   //EXCEPTION
   INVALID_REQUEST: "Invalid request",
@@ -32,7 +32,7 @@ const messageConstant = {
   EMAIL_PASSWORD_REQUIRED: "Email & Passwrod are required",
   USER_ALREADY_EXISTS_WITH_THIS_EMAIL: "User already exists with this email",
   TOO_MANY_ATTEMPTS: "Too many failed attempts. Your account has been BLOCKED.",
-  INVALID_EXPIRE_OTP:"Invalid Or Expired OTP",
+  INVALID_EXPIRE_OTP: "Invalid Or Expired OTP",
 
   //VALIDATIORS
   VALID_EMAIL: "Please enter valid email",

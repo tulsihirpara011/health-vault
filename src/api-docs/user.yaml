@@ -16,13 +16,13 @@ paths:
                 - password
               properties:
                 userName:
-                  type: string
+                  type: varchar
                   example: "Abcpqr"
                 email:
-                  type: string
-                  example: "abc@gmail.com"
+                  type: varchar
+                  example: "Abcd1@gmail.com"
                 password:
-                  type: string
+                  type: varchar
                   example: "S1234@abc"
       responses:
         201:

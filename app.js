@@ -1,12 +1,11 @@
 const { db, pool } = require("./src/config/db");
-const router = require("./src/routes/index");
 const express = require("express");
 require("dotenv").config();
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./src/config/swagger");
 
 // import routes index
-const routes = require("./src/routes");
+const routes = require("./src/routes/index");
 
 const app = express();
 
