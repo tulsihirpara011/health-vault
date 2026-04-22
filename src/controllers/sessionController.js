@@ -38,7 +38,10 @@ class SessionController {
       const sessionId = Number(req.params.id);
 
       if (!sessionId) {
-        return GeneralResponse.badRequest(res, "Invalid session id");
+        return GeneralResponse.badRequest(
+          res,
+          MessageConstant.INVALID_SESSION_ID,
+        );
       }
 
       const result = await sessionService.getSessionById(sessionId);

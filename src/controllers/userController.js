@@ -29,13 +29,6 @@ class userController {
       );
     } catch (error) {
       console.log("error in create user:", error);
-
-      if (error.errors) {
-        return GeneralResponse.badRequest(
-          res,
-          messageConstant.INVALID_PASSWORD,
-        );
-      }
       next(error);
     }
   };

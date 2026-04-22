@@ -20,6 +20,8 @@ const messageConstant = {
   USER_BLOCKED: "User Blocked",
   EMAIL_VERIFY_SUCCESSFULLY: "Email is verified successfully",
 
+  //session
+  INVALID_SESSION_ID: "Invalid session id",
   //EXCEPTION
   INVALID_REQUEST: "Invalid request",
   NOT_FOUND: "Not found",

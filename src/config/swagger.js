@@ -10,15 +10,15 @@ const options = {
       description: "API documentation using Swagger",
     },
 
-    // components: {
-    //   // securitySchemes: {
-    //   //   bearerAuth: {
-    //   //     type: "http",
-    //   //     scheme: "bearer",
-    //   //     bearerFormat: "JWT",
-    //   //   },
-    //   // },
-    // },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
     //applies authentication to ALL endpoints by default
     security: [
       {
