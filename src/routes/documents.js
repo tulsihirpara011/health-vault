@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-const { uplode, validatedFile } = require("../middlerwares/upload");
+const { upload, validateFile } = require("../middlerwares/upload");
 const FileController = require("../controllers/uploadFileController");
 
 //document upload route
 router.post(
   "/upload",
-  uplode.single("file"),
-  validatedFile,
+  upload.single("file"),
+  validateFile,
   FileController.uploadFile,
 );
 //download document url

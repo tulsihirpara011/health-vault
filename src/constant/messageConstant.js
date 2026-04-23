@@ -3,7 +3,8 @@ const messageConstant = {
   FILE_UPLOADED_SUCCESSFULLY: "File uploaded successfully",
   ERROR_UPLODED_FILE: "Error uploading file",
   FILE_SIZE_ERROR: "File size exceeds 25MB limit",
-  INVALID_FILE_TYPE: "Invalid file type. Only PDF, DOCX, and TXT are allowed",
+  INVALID_FILE_TYPE:
+    "Invalid file type. Only PDF, JPEG , PNG ,.doc , .docx and TXT are allowed",
   FILE_KEY_REQUIRED: "File key is required to get download URL",
   FILE_DOWNLOAD_URL_GENERATED: "File download URL generated successfully",
   ERROR_GENERATING_DOWNLOAD_URL: "Error generating download URL",
@@ -20,6 +21,7 @@ const messageConstant = {
   OK_RESPONSE: "OK",
   USER_NOT_FOUND: "User not found",
   EMAIL_EXISTING: "Email already exists",
+  FILE_REQUIRED: "File is required",
 };
 
 module.exports = messageConstant;
