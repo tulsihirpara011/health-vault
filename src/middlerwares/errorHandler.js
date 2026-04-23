@@ -1,28 +1,23 @@
 const multer = require("multer");
+const MessageConstant = require("../constant/messageConstant");
+const GeneralResponse = require("../helpers/genralResponse");
 
 const errorHandler = (err, req, res, next) => {
   console.error(err);
 
-  // File too large
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
-      return res.status(400).json({
-        success: false,
-        message: "File size exceeds 25MB limit",
-      });
+      return GeneralResponse.badRequestResponse(
+        res,
+        MessageConstant.FILE_SIZE_ERROR,
+      );
     }
   }
 
-  // Default error
-  return res.status(400).json({
-    success: false,
-    message: err.message || "Something went wrong",
-  });
-
-  //other error
-  return res.status(500).json({
-    success: false,
-    message: err.message || "Something went wrong",
-  });
+  return GeneralResponse.badRequestResponse(
+    res,
+    err.message || MessageConstant.BAD_REQUEST_ERROR,
+  );
 };
+
 module.exports = errorHandler;
