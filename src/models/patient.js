@@ -5,7 +5,8 @@ const {
   varchar,
   timestamp,
   boolean,
-  date
+  date,
+  pgEnum,
 } = require("drizzle-orm/pg-core");
 const { genderEnum } = require("../enumData/genderEnum");
 
@@ -16,7 +17,8 @@ const Patient = pgTable("patient", {
   fullName: varchar("full_name",{length:255}).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
-  gender: genderEnum("gender").notNull(),
+  gender: pgEnum("gender", GenderTypeValues)
+    .notNull(),
   dateOfBirth: date("date_of_birth").notNull(),
   age: integer("age").notNull(),
   phone: varchar("phone", { length: 10 }).notNull(),

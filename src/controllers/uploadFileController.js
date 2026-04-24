@@ -3,10 +3,11 @@ const MessageConstant = require("../constant/messageConstant");
 const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const { s3Client } = require("../config/aws");
 const GeneralResponse = require("../helpers/genralResponse");
+const { InvalidRequestException } = require("../excptions/ApiError");
 
 class FileController {
   // Upload File
-  async uploadFile(req, res) {
+  async uploadFile(req, res,next ) {
     try {
       if (!req.file) {
         return GeneralResponse.badRequestResponse(
@@ -23,7 +24,7 @@ class FileController {
         MessageConstant.FILE_UPLOADED_SUCCESSFULLY,
       );
     } catch (error) {
-      console.error("Error uploading file:", error);
+      throw new InvalidRequestException(messageConstant.ERROR_UPLODED_FILE);
 
       return GeneralResponse.internalServerError(
         res,

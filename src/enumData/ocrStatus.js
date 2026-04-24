@@ -1,5 +1,9 @@
-const { pgEnum } = require("drizzle-orm/pg-core");
-const statusType=["Pending","Processing","Completed","Failed"];
-const ocrStatus = pgEnum("status", statusType);
+const StatusType = Object.freeze({
+  PENDING: "PENDING",
+  PROCESSING: "PROCESSING",
+  COMPLETED: "COMPLETED",
+  FAILED: "FAILED",
+});
 
-module.exports = { ocrStatus, statusType};
+const StatusTypeValues = Object.values(StatusType);
+module.exports = { StatusType, StatusTypeValues };

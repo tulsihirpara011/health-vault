@@ -1,5 +1,10 @@
-const { pgEnum } = require("drizzle-orm/pg-core");
-const documentTypes = ["Lab Report", "Prescription","Discharge Summary","Other"];
-const documentTypeEnum = pgEnum("document_type_enum", documentTypes);
+const documentType = Object.freeze({
+  PRESCRIPTION: "PRESCRIPTION",
+  LAB_REPORT: "LAB_REPORT",
+  IMAGING_REPORT: "IMAGING_REPORT",
+  DISCHARGE_SUMMARY: "DISCHARGE_SUMMARY",
+  OTHER: "OTHER",
+});
 
-module.exports = { documentTypeEnum, documentTypes };
+const documentTypeEnum = Object.values(documentType);
+module.exports = { documentType, documentTypeEnum };

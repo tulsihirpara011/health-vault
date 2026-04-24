@@ -1,5 +1,9 @@
-const { pgEnum } = require("drizzle-orm/pg-core");
-const fileTypes= ["PDF", "JPG","JPEG","PNG"];
-const fileEnum = pgEnum("file", fileTypes);
+const fileTypes = Object.freeze({
+  PDF: "PDF",
+  JPG: "JPG",
+  JPEG: "JPEG",
+  PNG: "PNG"
+});
 
-module.exports = { fileEnum, fileTypes };
+const FileTypesValues = Object.values(fileTypes);
+module.exports = { fileTypes, FileTypesValues };
