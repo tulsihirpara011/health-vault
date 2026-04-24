@@ -2,8 +2,12 @@ const { db, pool } = require("./src/config/db");
 const cors = require("cors");
 const express = require("express");
 require("dotenv").config();
+const { checkS3BucketConnection } = require("./src/config/aws");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocs = require("./src/config/swagger");
+
+//call the function to check S3 bucket connection
+checkS3BucketConnection();
 
 // import routes index
 const routes = require("./src/routes/index");

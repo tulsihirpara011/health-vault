@@ -9,7 +9,7 @@ class documentController {
   // Add Document
   addDocument = async (req, res, next) => {
     try {
-      const result = await documentService.createDocument(req?.body);
+      const result = await documentService.addDocument(req?.body);
       return GeneralResponse.created(
         res,
         result,
