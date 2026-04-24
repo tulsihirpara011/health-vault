@@ -3,74 +3,61 @@ const MessageConstant = require("../constant/messageConstant");
 const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const { s3Client } = require("../config/aws");
 const GeneralResponse = require("../helpers/genralResponse");
+const messageConstant = require("../constant/messageConstant");
+const { InternalServerError } = require("../excptions/ApiError");
 
 class FileController {
   // Upload File
-  async uploadFile(req, res) {
+  async uploadFile(req, res, next) {
     try {
-      if (!req.file) {
-        return GeneralResponse.badRequestResponse(
-          res,
-          MessageConstant.FILE_REQUIRED,
-        );
-      }
+      const result = await S3Service.uploadFile(req.file);
 
-      const result = await S3Service.uploadFile(req.file, req.body.patientId);
-
-      return GeneralResponse.createdResponse(
+      return GeneralResponse.created(
         res,
         result,
         MessageConstant.FILE_UPLOADED_SUCCESSFULLY,
       );
     } catch (error) {
-      console.error("Error uploading file:", error);
-
-      return GeneralResponse.internalServerError(
-        res,
-        MessageConstant.ERROR_UPLODED_FILE,
-      );
+      next(error);
     }
   }
 
   // Download File
-  async getDownloadFile(req, res) {
+  async getDownloadFile(req, res, next) {
+    try {
+      const { stream, fileName, contentType } = await S3Service.getDownloadUrl(
+        req.query,
+      );
+
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${fileName}"`,
+      );
+
+      res.setHeader("Content-Type", contentType || "application/octet-stream");
+
+      stream.pipe(res);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  //delete file
+  async deleteFile(req, res, next) {
     try {
       const { filekey } = req.query;
 
       if (!filekey) {
-        return GeneralResponse.badRequestResponse(
-          res,
-          MessageConstant.FILE_KEY_REQUIRED,
-        );
+        throw new InvalidRequestException(MessageConstant.FILE_KEY_REQUIRED);
       }
-
-      const command = new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET,
-        Key: filekey,
-      });
-
-      const response = await s3Client.send(command);
-
-      // download file with original filename
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${filekey.split("/").pop()}"`,
-      );
-
-      res.setHeader(
-        "Content-Type",
-        response.ContentType || "application/octet-stream",
-      );
-
-      // Stream file directly
-      response.Body.pipe(res);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-
-      return GeneralResponse.internalServerError(
+      const result = await S3Service.deleteFile(filekey);
+      return GeneralResponse.success(
         res,
-        MessageConstant.ERROR_GENERATING_DOWNLOAD_URL,
+        result,
+        messageConstant.FILE_DELETED_SUCCESSFULLY,
       );
+    } catch (error) {
+      next(error);
     }
   }
 }

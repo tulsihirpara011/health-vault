@@ -1,130 +1,98 @@
-const MessageConstant = require("../constant/MessageConstant");
+const { StatusCodes } = require("http-status-codes");
+const MessageConstant = require("../constant/messageConstant");
 
 class GeneralResponse {
-  constructor(res, data, code, status, description) {
+  constructor(res, data, statusCode, status, message, errors = null) {
     this.data = data;
     this.status = status;
-    this.code = code;
-    this.description = description;
+    this.statusCode = statusCode;
+    this.message = message;
+    this.errors = errors;
 
     if (res) {
-      res.status(code).json({
-        data,
+      const response = {
+        data: data,
         status: {
           status: status,
-          code: code,
-          description: description,
+          statusCode: statusCode,
+          description: message,
         },
-      });
+      };
+      if (errors) {
+        response.errors = errors;
+      }
+      res.status(statusCode).json(response);
     }
   }
 
   // 200 OK
-  static getOkResponse(res, data, description = MessageConstant.OK_RESPONSE) {
-    return new GeneralResponse(
-      res,
-      data,
-      200,
-      MessageConstant.SUCCESS,
-      description,
-    );
+  static success(res, data = null, message = MessageConstant.SUCCESS) {
+    return new GeneralResponse(res, data, StatusCodes.OK, "SUCCESS", message);
+  }
+
+  // 200 OK
+  static updated(res, data = null, message = MessageConstant.UPDATED) {
+    return new GeneralResponse(res, data, StatusCodes.OK, "UPDATED", message);
   }
 
   // 201 Created
-  static createdResponse(
-    res,
-    data,
-    description = MessageConstant.USER_CREATED,
-  ) {
+  static created(res, data = null, message = MessageConstant.CREATED) {
     return new GeneralResponse(
       res,
       data,
-      201,
-      MessageConstant.SUCCESS,
-      description,
-    );
-  }
-
-  // 200 Updated
-  static updatedResponse(res, data, description = MessageConstant.USER_UPDATE) {
-    return new GeneralResponse(
-      res,
-      data,
-      200,
-      MessageConstant.SUCCESS,
-      description,
-    );
-  }
-
-  // 200 Deleted
-  static deletedResponse(res, description = MessageConstant.USER_DELETE) {
-    return new GeneralResponse(
-      res,
-      null,
-      200,
-      MessageConstant.SUCCESS,
-      description,
+      StatusCodes.CREATED,
+      "CREATED",
+      message,
     );
   }
 
   // 400 Bad Request
-  static badRequestResponse(
+  static badRequest(
     res,
-    description = MessageConstant.BAD_REQUEST_ERROR,
+    message = MessageConstant.BAD_REQUEST_ERROR,
+    errors = null,
   ) {
     return new GeneralResponse(
       res,
       null,
-      400,
-      MessageConstant.ERROR,
-      description,
-    );
-  }
-
-  // 401 Unauthorized
-  static unAuthorizeResponse(
-    res,
-    description = MessageConstant.UNAUTHORIZED_ERROR,
-  ) {
-    return new GeneralResponse(
-      res,
-      null,
-      401,
-      MessageConstant.ERROR,
-      description,
+      StatusCodes.BAD_REQUEST,
+      "BAD_REQUEST",
+      message,
+      errors,
     );
   }
 
   // 404 Not Found
-  static notFoundResponse(res, description = MessageConstant.USER_NOT_FOUND) {
+  static notFound(res, message = MessageConstant.NOT_FOUND) {
     return new GeneralResponse(
       res,
       null,
-      404,
-      MessageConstant.ERROR,
-      description,
-    );
-  }
-
-  // 409 Conflict
-  static conflictResponse(res, description = MessageConstant.EMAIL_EXISTING) {
-    return new GeneralResponse(
-      res,
-      null,
-      409,
-      MessageConstant.ERROR,
-      description,
+      StatusCodes.NOT_FOUND,
+      "NOT_FOUND",
+      message,
     );
   }
 
   // 500 Internal Server Error
-  static internalServerError(res, description = MessageConstant.SERVER_ERROR) {
+  static serverError(res, message = MessageConstant.INTERNAL_SERVER_ERROR) {
     return new GeneralResponse(
       res,
       null,
-      500,
-      MessageConstant.ERROR,
-      description,
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "INTERNAL_SERVER_ERROR",
+      message,
+    );
+  }
+
+  //401 Unauthorized Error
+  static UnauthorizeResponse(res, message = MessageConstant.UNAUTHORIZED) {
+    return new GeneralResponse(
+      res,
+      null,
+      StatusCodes.UNAUTHORIZED,
+      "UNAUTHORIZED",
+
+      message,
     );
   }
 }

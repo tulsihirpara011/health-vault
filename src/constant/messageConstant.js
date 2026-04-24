@@ -1,4 +1,14 @@
 const messageConstant = {
+  //general status messages
+  SUCCESS: "Success",
+  ERROR: "Error",
+  OK: "OK",
+  CREATED: "CREATED",
+  UPDATED: "UPDATED",
+  DELETED: "DELETED",
+  NO_DATA_FOUND: "No data found",
+  SOMETHING_WENT_WRONG: "Something went wrong, please try again later",
+
   //upload document messages
   FILE_UPLOADED_SUCCESSFULLY: "File uploaded successfully",
   ERROR_UPLODED_FILE: "Error uploading file",
@@ -8,6 +18,11 @@ const messageConstant = {
   FILE_KEY_REQUIRED: "File key is required to get download URL",
   FILE_DOWNLOAD_URL_GENERATED: "File download URL generated successfully",
   ERROR_GENERATING_DOWNLOAD_URL: "Error generating download URL",
+
+  //get document by file key messages
+  FILE_FETCHED_SUCCESSFULLY: "File fetched successfully",
+  FILE_IS_REQUIRED: "File is required",
+  FILE_NOT_FOUND: "File not found",
 
   //general messages
   SUCCESS: "Success",
@@ -22,6 +37,16 @@ const messageConstant = {
   USER_NOT_FOUND: "User not found",
   EMAIL_EXISTING: "Email already exists",
   FILE_REQUIRED: "File is required",
-};
+  FILE_KEY_NOT_FOUND: "File key not found in request",
+  FILE_DELETED_SUCCESSFULLY: "File deleted successfully",
 
+  //apierror messages
+  INVALID_REQUEST: "Invalid request",
+  NOT_FOUND: "Not found",
+  ALREADY_EXIST: "Already exist",
+  UNAUTHORIZED: "Unauthorized",
+  ACCESS_DENIED: "Access denied",
+  INTERNAL_SERVER_ERROR: "Internal server error",
+  SOMETHING_WENT_WRONG: "Something went wrong",
+};
 module.exports = messageConstant;

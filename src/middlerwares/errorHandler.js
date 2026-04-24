@@ -7,14 +7,11 @@ const errorHandler = (err, req, res, next) => {
 
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
-      return GeneralResponse.badRequestResponse(
-        res,
-        MessageConstant.FILE_SIZE_ERROR,
-      );
+      return GeneralResponse.badRequest(res, MessageConstant.FILE_SIZE_ERROR);
     }
   }
 
-  return GeneralResponse.badRequestResponse(
+  return GeneralResponse.badRequest(
     res,
     err.message || MessageConstant.BAD_REQUEST_ERROR,
   );

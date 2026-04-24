@@ -12,10 +12,7 @@ const upload = multer({
 const validateFile = (req, res, next) => {
   try {
     if (!req.file) {
-      return GeneralResponse.badRequestResponse(
-        res,
-        MessageConstant.FILE_REQUIRED,
-      );
+      return GeneralResponse.badRequest(res, MessageConstant.FILE_REQUIRED);
     }
 
     const allowedTypes = [
@@ -28,20 +25,14 @@ const validateFile = (req, res, next) => {
     ];
 
     if (!allowedTypes.includes(req.file.mimetype)) {
-      return GeneralResponse.badRequestResponse(
-        res,
-        MessageConstant.INVALID_FILE_TYPE,
-      );
+      return GeneralResponse.badRequest(res, MessageConstant.INVALID_FILE_TYPE);
     }
 
     next();
   } catch (error) {
     console.error("File validation error:", error);
 
-    return GeneralResponse.internalServerError(
-      res,
-      MessageConstant.SERVER_ERROR,
-    );
+    return GeneralResponse.serverError(res, MessageConstant.SERVER_ERROR);
   }
 };
 

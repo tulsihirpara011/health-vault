@@ -33,20 +33,4 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
---> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "first_name";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "middle_name";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "last_name";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "initial";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "date_of_birth";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "age";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "gender";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "mobile_no";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "city";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "state";--> statement-breakpoint
-ALTER TABLE "users" DROP COLUMN IF EXISTS "roles";--> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "session" ADD CONSTRAINT "session_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
+

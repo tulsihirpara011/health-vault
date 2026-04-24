@@ -3,7 +3,7 @@ paths:
     post:
       summary: Upload file to AWS S3
       tags:
-        - File Upload
+        - File
       requestBody:
         required: true
         content:
@@ -28,7 +28,7 @@ paths:
     get:
       summary: Get download URL from S3
       tags:
-        - File Download
+        - File
       parameters:
         - in: query
           name: filekey
@@ -44,3 +44,22 @@ paths:
           description: File key missing
         500:
           description: Server error
+  /delete:
+    delete:
+      summary: Delete file from AWS S3
+      tags:
+        - File
+      parameters:
+        - in: query
+          name: filekey
+          required: true
+          schema:
+            type: string
+          description: S3 file key
+      responses:
+        200:
+          description: File deleted successfully
+        400:
+          description: File key missing
+        500:
+          description: server error
