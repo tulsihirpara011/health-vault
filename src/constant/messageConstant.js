@@ -11,6 +11,8 @@ const messageConstant = {
 
   // USER
   USER_ADDED_SUCCESSFULLY: "User Added Successfully",
+  USER_LOGIN_SUCCESSFULLY: "User Login Successfully",
+  USERID_REQUIRED: "UserId is required",
   USER_UPDATED_SUCCESSFULLY: "User Updated Successfully",
   USER_DELETED_SUCCESSFULLY: "User Deleted Successfully",
   USERS_FOUND_SUCCESSFULLY: "User Found Successfully",
@@ -20,6 +22,9 @@ const messageConstant = {
   USER_BLOCKED: "User Blocked",
   EMAIL_VERIFY_SUCCESSFULLY: "Email is verified successfully",
   EMAIL_ALREADY_EXISTS: "Email is already exists",
+  USER_PERMANENTLY_DELETED_SUCCESSFULLY: "User Permanently Deleted Successfully",
+  USER_FETCHED_SUCCESSFULLY: "User Fetched Successfully",
+  USER_LIST_FETCHED_SUCCESSFULLY: "User List Fetched Successfully",
 
   //EXCEPTION
   INVALID_SESSIONID:"Invalid session id",
@@ -53,8 +58,8 @@ const messageConstant = {
   EMAIL_TOO_SHORT: "Email must be atleast 5 character",
   EMAIL_TOO_LONG: "Email is too long",
   PASSWORD_REQUIRED: "Enter Password",
-  PASSWORD_TOO_SHORT: "PASSWORD_TOO_SHORT",
-  PASSWORD_TOO_LONG: "PASSWORD_TOO_LONG",
+  PASSWORD_TOO_SHORT: "Password must be atleast 8 characters",
+  PASSWORD_TOO_LONG: "Password is too long",
   NAME_REQUIRED: "Enter Name",
   NAME_TOO_SHORT: "Name is too short",
   NAME_TOO_LONG: "Name is too long ",
@@ -64,7 +69,6 @@ const messageConstant = {
   NO_ALFABATES: "No alphabates are allowed",
   AGE_GREATER_0: "Age must be greater than zero",
   MUSTCONTAIN_LOWERCASE: "Name must write in lowercase letter",
-  FUTURE_dateOfBirth: "Date of birth cant be in future",
   NOT_ELIGIBLE: "Not eligible for login",
   INVALID_ZIP: "Invalid zipCode",
   MUST_UPPER: "Must contain uppercase",

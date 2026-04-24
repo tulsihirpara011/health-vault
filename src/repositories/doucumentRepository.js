@@ -44,7 +44,8 @@ class documentRepository
   async permanentDeleteDocument(id) {
     const result = await db
       .delete(Document)
-      .where(eq(Document.id, id));
+      .where(eq(Document.id, id))
+      .returning();
     return result[0] || null;
   }
 }

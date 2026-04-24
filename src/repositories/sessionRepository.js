@@ -9,6 +9,21 @@ class SessionRepository {
     return result[0];
   }
 
+  //create user session
+  createSession = async ({ userId }) => {
+    const [sessionCreate] = await db
+      .insert(session)
+      .values({
+        userId,
+        loginTime: new Date(),
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return sessionCreate ?? null;
+  };
+  
   async findById(id) {
     const result = await db
       .select()
@@ -31,6 +46,14 @@ class SessionRepository {
 
     return result[0];
   }
+
+  async deleteSessionsByUserId(userId) {
+    const result = await db
+      .delete(session)
+      .where(eq(session.userId, userId))
+      .returning();
+       return result[0] || null;
+    }
 }
 
 module.exports = new SessionRepository();

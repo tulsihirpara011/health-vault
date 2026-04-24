@@ -3,6 +3,9 @@ const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { s3Client } = require("../config/aws");
 const MessageConstant = require("../constant/messageConstant");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { InvalidRequestException } = require("../excptions/ApiError");
+const messageConstant = require("../constant/messageConstant");
+const doucumentRepository = require("../repositories/doucumentRepository");
 require("dotenv").config();
 
 class S3Service {
@@ -12,10 +15,10 @@ class S3Service {
   }
 
   // Upload file method
-  async uploadFile(file) {
+  async  uploadFile(file) {
     try {
       if (!file) {
-        throw new Error("File is required");
+        throw new InvalidRequestException(messageConstant.FILE_REQUIRED);
       }
       // folder structure
       const fileKey = `patients/${Date.now()}-${file.originalname}`;
@@ -27,12 +30,24 @@ class S3Service {
         Body: file.buffer,
         ContentType: file.mimetype,
       });
-
       await s3Client.send(command);
-
-      return {
-        fileKey,
-      };
+      const documentData = {
+      // userId,
+      // documentType: data.documentType,
+      fileName: file.originalname,
+      fileStoragePath: fileKey,
+      fileType: file.mimetype,
+      fileSize: file.size,
+      hospitalName: body.hospitalName,
+      doctorName: body.doctorName,
+      remarks: body.remarks || null,
+      reportDate: body.reportDate || null,
+      OCRStatus: "Pending",
+    };
+    console.log("DocumentData===",documentData);
+    
+      return { fileKey, documentData };
+      return await doucumentRepository.addDocument(documentData);
     } catch (error) {
       throw new Error(`Error uploading file to S3: ${error.message}`);
     }
