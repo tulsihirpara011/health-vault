@@ -1,6 +1,6 @@
 {
-  "id": "8e1dfc23-741b-4fc3-a101-c8638c008c99",
-  "prevId": "ab258ec2-92d3-4390-a9c7-12219d65b2aa",
+  "id": "ab258ec2-92d3-4390-a9c7-12219d65b2aa",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -46,10 +46,10 @@
         },
         "gender": {
           "name": "gender",
-          "type": "gender_enum",
+          "type": "gender",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "date_of_birth": {
           "name": "date_of_birth",

@@ -10,12 +10,10 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - userId
               properties:
-                userId:
-                  type: integer
-                  example: 1
+                token:
+                  type: string
+                  example: your_jwt_token_here
       responses:
         201:
           description: Session created successfully
@@ -34,28 +32,5 @@ paths:
       responses:
         200:
           description: Session fetched successfully
-        404:
-          description: Session not found
-
-  /session/logout:
-    post:
-      summary: Logout session
-      tags:
-        - Session
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - sessionId
-              properties:
-                sessionId:
-                  type: integer
-                  example: 1
-      responses:
-        200:
-          description: Logout successful
         404:
           description: Session not found

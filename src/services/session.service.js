@@ -1,37 +1,31 @@
-const sessionRepository = require("../repositories/sessionRepositoty");
+const sessionRepository = require("../repositories/sessionRepository");
 const MessageConstant = require("../constant/MessageConstant");
+const messageConstant = require("../constant/MessageConstant");
+const jwt = require("jsonwebtoken");
+const { InvalidRequestException } = require("../excptions/ApiError");
+const { checkValidateToken } = require("../utils/jwtUtils");
 
 class SessionService {
   // create session
   async createSession(data) {
+    if (!data||!data.userId) {
+      throw new InvalidRequestException(messageConstant.USERID_REQUIRED);
+    }
     return await sessionRepository.create(data);
   }
 
   // get session by id
   async getSessionById(sessionId) {
+    if (!sessionId) {
+      throw new InvalidRequestException(MessageConstant.INVALID_SESSIONID);
+    }
     const session = await sessionRepository.findById(sessionId);
 
     if (!session) {
-      throw new Error(MessageConstant.SESSION_NOT_FOUND);
+      throw new InvalidRequestException(MessageConstant.SESSION_NOT_FOUND);
     }
 
     return session;
-  }
-
-  // logout session
-  async logoutSession(sessionId) {
-    const existing = await sessionRepository.findById(sessionId);
-
-    if (!existing) {
-      throw new Error(MessageConstant.SESSION_NOT_FOUND);
-    }
-
-    if (!existing.isActive) {
-      throw new Error(MessageConstant.ALREADY_LOGOUT);
-    }
-
-    const result = await sessionRepository.logout(sessionId);
-    return { data: result, message: MessageConstant.LOGOUT_SUCCESS };
   }
 }
 

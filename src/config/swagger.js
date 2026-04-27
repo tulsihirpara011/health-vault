@@ -9,7 +9,6 @@ const options = {
       version: "1.0.0",
       description: "API documentation using Swagger",
     },
-
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -19,7 +18,7 @@ const options = {
         },
       },
     },
-    //applies authentication to ALL endpoints by default
+    // applies authentication to ALL endpoints by default
     security: [
       {
         bearerAuth: [],

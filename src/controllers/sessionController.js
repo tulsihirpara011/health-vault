@@ -1,19 +1,17 @@
 const sessionService = require("../services/session.service");
 const GeneralResponse = require("../helpers/genralResponse");
 const MessageConstant = require("../constant/MessageConstant");
-const {
-  createSessionSchema,
-  logoutSchema,
-  deleteSchema,
-} = require("../validation/sessionValidation");
+const jwt = require("jsonwebtoken");
 
 class SessionController {
   //create session
-  async createSession(req, res) {
+  async createSession(req, res, next) {
     try {
-      const validated = createSessionSchema.parse(req.body);
-
-      const result = await sessionService.createSession(validated);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const data = {
+        userId: decoded.userId,
+      };
+      const result = await sessionService.createSession(data);
 
       return GeneralResponse.created(
         res,
@@ -21,29 +19,14 @@ class SessionController {
         MessageConstant.SESSION_CREATED,
       );
     } catch (error) {
-      if (error.name === "ZodError") {
-        return GeneralResponse.badRequest(
-          res,
-          MessageConstant.VALIDATION_FAILED,
-          error.errors,
-        );
-      }
-
-      return GeneralResponse.serverError(res, error.message);
+      console.log("error in create session:", error);
+      next(error);
     }
   }
   // get session by id
-  async getSessionById(req, res) {
+  async getSessionById(req, res, next) {
     try {
-      const sessionId = Number(req.params.id);
-
-      if (!sessionId) {
-        return GeneralResponse.badRequest(
-          res,
-          MessageConstant.INVALID_SESSION_ID,
-        );
-      }
-
+      const sessionId = Number(req?.params?.id);
       const result = await sessionService.getSessionById(sessionId);
 
       return GeneralResponse.success(
@@ -52,39 +35,8 @@ class SessionController {
         MessageConstant.SESSION_FETCHED,
       );
     } catch (error) {
-      if (error.message === MessageConstant.SESSION_NOT_FOUND) {
-        return GeneralResponse.notFound(res, error.message);
-      }
-
-      return GeneralResponse.serverError(res, error.message);
-    }
-  }
-  // logout session
-  async logout(req, res) {
-    try {
-      const validated = logoutSchema.parse(req.body);
-
-      const result = await sessionService.logoutSession(validated.sessionId);
-
-      return GeneralResponse.success(
-        res,
-        result,
-        MessageConstant.LOGOUT_SUCCESS,
-      );
-    } catch (error) {
-      if (error.message === MessageConstant.SESSION_NOT_FOUND) {
-        return GeneralResponse.notFound(res, error.message);
-      }
-
-      if (error.name === "ZodError") {
-        return GeneralResponse.badRequest(
-          res,
-          MessageConstant.VALIDATION_FAILED,
-          error.errors,
-        );
-      }
-
-      return GeneralResponse.serverError(res, error.message);
+      console.log("error in getSessionById:", error);
+      next(error);
     }
   }
 }

@@ -7,14 +7,14 @@ const {
   integer,
 } = require("drizzle-orm/pg-core");
 
-const { user } = require("./User");
+const { User } = require("./patient");
 
 const session = pgTable("session", {
   id: serial("id").primaryKey(),
 
   userId: integer("user_id")
     .notNull()
-    .references(() => user.id),
+    .references(() => User.id, { onDelete: "cascade" }),
 
   loginTime: timestamp("login_time").defaultNow().notNull(),
   logoutTime: timestamp("logout_time"),

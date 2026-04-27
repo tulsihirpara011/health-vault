@@ -1,25 +1,30 @@
 const { StatusCodes } = require("http-status-codes");
 class GeneralResponse {
-  constructor(res, data, statusCode, status, message) {
+  constructor(res, data, statusCode, status, message, errors = null) {
     this.data = data;
     this.status = status;
     this.statusCode = statusCode;
     this.message = message;
+    this.errors = errors;
 
     if (res) {
-      res.status(statusCode).json({
+      const response = {
         data: data,
         status: {
           status: status,
           statusCode: statusCode,
           description: message,
         },
-      });
+      };
+      if (errors) {
+        response.errors = errors;
+      }
+      res.status(statusCode).json(response);
     }
   }
 
   // 200 OK
-  static success(res, data = null, message = "Success") {
+  static success(res, data = null, message = "Success") { 
     return new GeneralResponse(res, data, StatusCodes.OK, "SUCCESS", message);
   }
 
@@ -75,10 +80,10 @@ class GeneralResponse {
 
   //401 Unauthorized Error
   static UnauthorizeResponse(res, message = "Unauthorized error") {
-    return new UnauthorizedResponse(
+    return new GeneralResponse(
       401,
       null,
-      STATUS_CODE.UNAUTHORIZED,
+      StatusCodes.UNAUTHORIZED,
       "UNAUTHORIZED",
       message,
     );
