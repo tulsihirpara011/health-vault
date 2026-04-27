@@ -10,6 +10,7 @@ const {
   updateUserSchema,
 } = require("../validation/zodUserValidation");
 const { InvalidRequestException } = require("../excptions/ApiError");
+const { session } = require("../models/session");
 
 class patientController {
   // Patient Login
@@ -118,11 +119,8 @@ class patientController {
   // Logout Patient
   logout = async (req, res, next) => {
     try {
-      const token = req.headers?.authorization.split(" ")[1];
-      if (!token) {
-        throw new InvalidRequestException(messageConstant.INVALID_TOKEN);
-      }
-      const result = await patientService.logout(token);
+      const sessionId=req.user.session;
+      const result = await patientService.logout(sessionId);
       return GeneralResponse.success(
         res,
         result,
@@ -132,6 +130,21 @@ class patientController {
       console.log("error in logout user:", error);
       next(error);
     }
-  };
+  }
+  getPatientProfile = async (req, res, next) => {
+    try {
+      const sessionId=req.user.session;
+      const result = await patientService.getPatientProfile(sessionId);
+      return GeneralResponse.success(
+        res,
+        result,
+        messageConstant.USER_PROFILE_FETCHED_SUCCESSFULLY,
+      );
+    } catch (error) {
+      console.log("error in get patient profile:", error);
+      next(error);
+    }
+
 }
+};
 module.exports = new patientController();

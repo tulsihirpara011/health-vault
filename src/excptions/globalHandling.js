@@ -3,6 +3,18 @@ const { ZodError } = require("zod");
 const messageConstant = require("../constant/messageConstant");
 
 function errorMiddleware(err, req, res, next) {
+  if (err instanceof ZodError) {
+    const formattedErrors = err.errors.map(e => ({
+      field: e.path.join("."),
+      message: e.message,
+    }));
+
+    return GeneralResponse.badRequest(
+      res,
+      "Validation failed",
+      formattedErrors
+    );
+  }
   if (err.errors && Array.isArray(err.errors)) {
     const formattedErrors = err.errors.map(e => ({
       field: e.path?.join?.(".") || "",

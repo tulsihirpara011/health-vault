@@ -7,19 +7,19 @@ const{  documentSchema } = require("../validation/zodDocumentValidation");
 
 class documentController {
   // Add Document
-  addDocument = async (req, res, next) => {
-    try {
-      const result = await documentService.addDocument(req?.body);
-      return GeneralResponse.created(
-        res,
-        result,
-        messageConstant.DOCUMENT_ADDED_SUCCESSFULLY,
-      );
-    } catch (error) {
-      console.log("error in addDocument:", error);
-      next(error);
-    }
-  };
+  // addDocument = async (req, res, next) => {
+  //   try {
+  //     const result = await documentService.addDocument(req?.body);
+  //     return GeneralResponse.created(
+  //       res,
+  //       result,
+  //       messageConstant.DOCUMENT_ADDED_SUCCESSFULLY,
+  //     );
+  //   } catch (error) {
+  //     console.log("error in addDocument:", error);
+  //     next(error);
+  //   }
+  // };
 
   // Get Document by ID
   getDocumentById = async (req, res, next) => {

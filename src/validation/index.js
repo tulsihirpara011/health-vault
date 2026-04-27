@@ -7,7 +7,8 @@ async function zodValidateData(schema, data) {
     if (!schema || !data) {
       return { success: false, error: messageConstant.INTERNAL_SERVER_ERROR };
     }
-    const result = await schema.safeParseAsync(data);
+
+    const result = await schema.safeParseAsync(data);    
     if (!result.success) {
       return {
         success: false,

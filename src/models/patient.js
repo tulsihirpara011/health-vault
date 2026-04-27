@@ -1,6 +1,6 @@
 const {
-  serial,
   pgTable,
+  serial,
   integer,
   varchar,
   timestamp,
@@ -8,17 +8,17 @@ const {
   date,
   pgEnum,
 } = require("drizzle-orm/pg-core");
-const { genderEnum } = require("../enumData/genderEnum");
+const { genderEnum, GenderTypeValues } = require("../enumData/genderEnum");
+const genderEnumDb = pgEnum("gender_enum", GenderTypeValues);
 
-const Patient = pgTable("patient", {
+const Patient =pgTable("patient", {
   id: serial("id").primaryKey(),
   patientCode: varchar("patient_code", { length: 50 }).notNull().unique(),
   userName: varchar("user_name", { length: 255 }).notNull(),
   fullName: varchar("full_name",{length:255}).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
-  gender: pgEnum("gender", GenderTypeValues)
-    .notNull(),
+  gender: genderEnumDb("gender_enum"),  
   dateOfBirth: date("date_of_birth").notNull(),
   age: integer("age").notNull(),
   phone: varchar("phone", { length: 10 }).notNull(),

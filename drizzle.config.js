@@ -4,7 +4,7 @@ const { defineConfig } = require("drizzle-kit");
 
 module.exports = defineConfig({
   schema:[ "./src/models/index.js",
-  "./src/enumData/*"],
+  "./src/enumData/*.js"],
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {

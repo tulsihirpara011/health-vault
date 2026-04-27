@@ -7,17 +7,16 @@ const { InvalidRequestException } = require("../excptions/ApiError");
 
 class FileController {
   // Upload File
-  async uploadFile(req, res,next ) {
+  async uploadFile(req, res, next) {
     try {
-      if (!req.file) {
-        return GeneralResponse.badRequestResponse(
-          res,
-          MessageConstant.FILE_REQUIRED,
-        );
-      }
-
-      const result = await S3Service.uploadFile(req.file, req.body.patientId);
-
+      const sessionId=req.user.session;
+      // if (!req.file) {
+      //   return GeneralResponse.badRequestResponse(
+      //     res,
+      //     MessageConstant.FILE_REQUIRED,
+      //   );
+      // }
+      const result = await S3Service.uploadFile(req.file,sessionId);
       return GeneralResponse.createdResponse(
         res,
         result,

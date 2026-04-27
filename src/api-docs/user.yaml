@@ -184,3 +184,14 @@ paths:
           description: Logout successful
         404:
           description: Session not found
+
+  /patient/profile:
+    get:
+      summary: Get user profile
+      tags:
+        - User
+      responses:
+        200:
+          description: User profile fetched successfully
+        404:
+          description: User not found

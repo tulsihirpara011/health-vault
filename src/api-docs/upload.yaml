@@ -1,5 +1,5 @@
 paths:
-  /upload:
+  /documents/upload:
     post:
       summary: Upload file to AWS S3
       tags:

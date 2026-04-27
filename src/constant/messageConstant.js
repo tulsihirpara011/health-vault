@@ -28,10 +28,17 @@ const messageConstant = {
 
   //EXCEPTION
   INVALID_SESSIONID:"Invalid session id",
+  FILE_REQUIRED: "File is required",
+  FILE_UPLOADED_SUCCESSFULLY:"File uploaded successfully",
+  FILE_KEY_REQUIRED: "File key is required",  
+  ERROR_GENERATING_DOWNLOAD_URL:"Error generating download URL",
+  ERROR_UPLODED_FILE:"Error uploading file",
+  INVALID_FILE_KEY: "Invalid file key",
   SESSION_NOT_FOUND: "Session not found",
   LOGOUT_SUCCESS: "Logout successfully",
   ALREADY_LOGOUT: "Already logout",
   INVALID_TOKEN:"Invalid token",
+  INVALID_FILE_TYPE: "Invalid file type. Allowed types are PDF, JPEG, PNG, DOC, DOCX, and TXT.",
   VALIDATION_FAILED:"Validation failed",
   INVALID_REQUEST: "Invalid request",
   ALREADY_EXIST:"Already exist",
@@ -46,9 +53,11 @@ const messageConstant = {
   USER_ALREADY_EXISTS_WITH_THIS_EMAIL: "User already exists with this email",
   TOO_MANY_ATTEMPTS: "Too many failed attempts. Your account has been BLOCKED.",
   INVALID_EXPIRE_OTP: "Invalid Or Expired OTP",
+  SERVER_ERROR: "Server error",
 
   //VALIDATIORS
   VALID_EMAIL: "Please enter valid email",
+  AGE_CALCULATION_FAILED: "Age calculation failed",
   ENTER_VALID_GENDER:"Enter a valid gender",
   HOSPITAL_NAME_REQUIRED:"Hospital name is required",
   VALID_FILE_SIZE:"File size exceeds the 25MB limit. Please upload a smaller file.",

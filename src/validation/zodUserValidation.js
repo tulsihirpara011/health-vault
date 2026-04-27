@@ -1,8 +1,9 @@
 const { z } = require("zod");
 const messageConstant = require("../constant/messageConstant");
-const { genderValues } = require("../enumData/genderEnum");
+const { GenderTypeValues } = require("../enumData/genderEnum");
+const { InvalidRequestException } = require("../excptions/ApiError");
 
-const genderZod = z.enum(genderValues,messageConstant.INVALID_GENDER);
+const genderZod = z.enum(GenderTypeValues,messageConstant.INVALID_GENDER);
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const UPPER_REGEX = /[A-Z]/;
@@ -76,7 +77,7 @@ const userSchema = z
         age: calculateAge(data.dateOfBirth),
       };
     } catch (err) {
-      throw new Error("Age calculation failed ");
+      throw new InvalidRequestException(messageConstant.AGE_CALCULATION_FAILED);
     }
   });
 //updated user schema for update operation
@@ -93,10 +94,12 @@ const updateUserSchema = z.object({
     try {
       return {
         ...data,
-        age: calculateAge(data.dateOfBirth),
+        ...(data.dateOfBirth
+          ? { age: calculateAge(data.dateOfBirth) }
+          : {}),
       };
     } catch (err) {
-      throw new Error("Age calculation failed ");
+      throw new InvalidRequestException(messageConstant.AGE_CALCULATION_FAILED);
     }
   });
 const loginUserSchema = z.object({

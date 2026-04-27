@@ -33,6 +33,15 @@ class SessionRepository {
       return result?.[0]||null;
   }
 
+  async getSessionById(id) {
+    const result = await db
+      .select()
+      .from(session)
+      .where(eq(session.id, id))
+      .limit(1);
+    return result[0] || null;
+  }
+
   async logout(sessionId) {
     const result = await db
       .update(session)

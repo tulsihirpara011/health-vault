@@ -28,7 +28,7 @@ const validateFile = (req, res, next) => {
     ];
 
     if (!allowedTypes.includes(req.file.mimetype)) {
-      return GeneralResponse.badRequestResponse(
+      return GeneralResponse.badRequest(
         res,
         MessageConstant.INVALID_FILE_TYPE,
       );

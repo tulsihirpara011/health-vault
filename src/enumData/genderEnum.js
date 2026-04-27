@@ -1,6 +1,6 @@
 const genderType = Object.freeze({
-  MALE: "MALE",
-  FEMALE: "FEMALE",
+  MALE: "male",
+  FEMALE: "female",
 });
 
 const GenderTypeValues = Object.values(genderType);

@@ -1,12 +1,12 @@
 const { z } = require("zod");
 const messageConstant = require("../constant/messageConstant");
 const { documentTypeEnum } = require("../enumData/documentType");
-const { fileType } = require("../enumData/fileEnum");
-const { statusType } = require("../enumData/ocrStatus");
+const { FileTypesValues } = require("../enumData/fileEnum");
+const { StatusTypeValues } = require("../enumData/ocrStatus");
 
 const documentEnum = z.enum(documentTypeEnum, messageConstant.VALID_DOCUMENT);
-const fileEnum = z.enum(fileType,messageConstant.ENTER_VALID_FILETYPE);
-const ocrEnum = z.enum(statusType);
+const fileEnum = z.enum(FileTypesValues, messageConstant.ENTER_VALID_FILETYPE);
+const ocrEnum = z.enum(StatusTypeValues, messageConstant.VALID_OCR_STATUS);
 const UPPER_REGEX = /[A-Z]/;
 const LOWER_CASE = /[a-z]/;
 const NUMBER = /[0-9]/;

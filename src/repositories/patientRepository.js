@@ -40,7 +40,7 @@ class patientRepository {
       .select()
       .from(Patient)
       .where(eq(Patient.softDelete, false));
-    return result[0] ?? null;
+    return result || [];
   }
 
   async updatePatient(id, data) {
@@ -87,6 +87,13 @@ class patientRepository {
       .returning();
     return result[0] || null;
   }
+  async findById(userId) {
+    const result = await db
+      .select()
+      .from(Patient)
+      .where(and(eq(Patient.id, userId), eq(Patient.softDelete, false)))
+      .limit(1);
+    return result[0]??null;
 }
-
+}
 module.exports = new patientRepository();

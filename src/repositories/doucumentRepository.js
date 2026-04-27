@@ -7,10 +7,12 @@ const { Document } = require("../models/Document");
 class documentRepository
 {  // Create Document
   async addDocument(data) {
-    return await db
+    console.log("Data====",data);
+    const result = await db
       .insert(Document)
       .values(data)
       .returning();
+    return result[0]?? null;
   }
   //get document by id
   async getDocumentById(id) {

@@ -6,24 +6,31 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { InvalidRequestException } = require("../excptions/ApiError");
 const messageConstant = require("../constant/messageConstant");
 const doucumentRepository = require("../repositories/doucumentRepository");
+const sessionRepository = require("../repositories/sessionRepository");
+const JwtUtils = require("../utils/jwtUtils");
 require("dotenv").config();
 
 class S3Service {
   constructor() {
     this.bucket = process.env.AWS_BUCKET;
     this.region = process.env.AWS_REGION;
+    this.folder="patient_Document";
   }
 
   // Upload file method
-  async  uploadFile(file) {
+  async  uploadFile(file,sessionId) {
     try {
       if (!file) {
-        throw new InvalidRequestException(messageConstant.FILE_REQUIRED);
+        throw new InvalidRequestException(MessageConstant.FILE_REQUIRED);
       }
+        const decoded=sessionRepository.findById(sessionId);
+        if (!sessionId) {
+          throw new InvalidRequestException(MessageConstant.SESSION_NOT_FOUND);
+        }
+        const userId=decoded.userId;
       // folder structure
-      const fileKey = `patients/${Date.now()}-${file.originalname}`;
+      const fileKey = `${this.folder}/${Date.now()}-${file.originalname}`;
       console.log("fileKey:", fileKey);
-
       const command = new PutObjectCommand({
         Bucket: this.bucket,
         Key: fileKey,
@@ -32,24 +39,17 @@ class S3Service {
       });
       await s3Client.send(command);
       const documentData = {
-      // userId,
+      userId: userId,
       // documentType: data.documentType,
       fileName: file.originalname,
       fileStoragePath: fileKey,
       fileType: file.mimetype,
       fileSize: file.size,
-      hospitalName: body.hospitalName,
-      doctorName: body.doctorName,
-      remarks: body.remarks || null,
-      reportDate: body.reportDate || null,
-      OCRStatus: "Pending",
     };
     console.log("DocumentData===",documentData);
-    
-      return { fileKey, documentData };
       return await doucumentRepository.addDocument(documentData);
     } catch (error) {
-      throw new Error(`Error uploading file to S3: ${error.message}`);
+      throw new InvalidRequestException(messageConstant.ERROR_UPLODED_FILE);
     }
   }
 
