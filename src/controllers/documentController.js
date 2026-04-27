@@ -2,8 +2,8 @@ const messageConstant = require("../constant/messageConstant");
 const errorHandler = require("../excptions/globalHandling");
 const GeneralResponse = require("../helpers/genralResponse");
 const documentService = require("../services/documentService");
-const zodValidateData=require("../validation/index");
-const{  documentSchema } = require("../validation/zodDocumentValidation");
+const zodValidateData = require("../validation/index");
+const { documentSchema } = require("../validation/zodDocumentValidation");
 
 class documentController {
   // Add Document
@@ -52,7 +52,7 @@ class documentController {
   };
 
   // Delete Document
-  deleteDocument = async (req, res, next) => {
+  cleadeleteDocument = async (req, res, next) => {
     try {
       const result = await documentService.deleteDocument(req?.params?.id);
       return GeneralResponse.success(

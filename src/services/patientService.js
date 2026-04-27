@@ -6,6 +6,7 @@ const {
   AlredayExistsException,
   UnauthorizedException,
   AccessDeniedError,
+  InternalServerError,
 } = require("../excptions/ApiError");
 const {
   userSchema,
@@ -34,26 +35,39 @@ class patientService {
     if (!validation.success) {
       throw new InvalidRequestException("Validation failed", validation.error);
     }
-    const userData = await patientRepository.loginPatient(validation.data.email,validation.data.password);
+    const userData = await patientRepository.loginPatient(
+      validation.data.email,
+      validation.data.password,
+    );
     if (!userData) {
       throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
-    const isMatch = await bcrypt.compare(validation.data.password, userData.password);
+    const isMatch = await bcrypt.compare(
+      validation.data.password,
+      userData.password,
+    );
     if (!isMatch) {
       throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
     //Sessiondata
-    const session = await sessionRepositoty.createSession({ userId: userData.id });
+    const session = await sessionRepositoty.createSession({
+      userId: userData.id,
+    });
     const payload = { session: session.id };
     return JwtUtils.generateToken(payload);
   }
 
   // Create Patient
   async createPatient(data) {
+    console.log("Incoming data:", data);
     const patientCode = await generateNumericPatientCode();
     const userData = { ...data, patientCode };
+    console.log("UserData:", userData);
+
     const validation = await zodValidateData(userSchema, userData);
     if (!validation.success) {
+      // console.log("Zod error:", validation.error);
+      console.log(validation);
       throw new InvalidRequestException("Validation failed", validation.error);
     }
     const validatedData = validation.data || {};
@@ -97,20 +111,23 @@ class patientService {
     if (validatedData.password) {
       validatedData.password = await bcrypt.hash(validatedData.password, 10);
     }
-    const updatedUser = await patientRepository.updatePatient(id, validatedData);
+    const updatedUser = await patientRepository.updatePatient(
+      id,
+      validatedData,
+    );
     return updatedUser;
   }
 
   //delete patient by id
   async deletePatient(id) {
-      if (!id) {
-        throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
-      }
-      const result = await patientRepository.deletePatient(id);
-      if (!result) {
-        throw new NotFoundException(messageConstant.USER_NOT_FOUND);
-      }
+    if (!id) {
+      throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
+    const result = await patientRepository.deletePatient(id);
+    if (!result) {
+      throw new NotFoundException(messageConstant.USER_NOT_FOUND);
+    }
+  }
 
   //permanent delete patient by id
   async permanentDeletePatient(id) {
@@ -127,12 +144,12 @@ class patientService {
   // logout user
   async logout(token) {
     if (!token) {
-      throw new InvalidRequestException(messageConstant.INVALID_TOKEN); 
+      throw new InvalidRequestException(messageConstant.INVALID_TOKEN);
     }
     const decoded = JwtUtils.checkValidateToken(token);
-    const sessionId=decoded.session;
+    const sessionId = decoded.session;
     console.log(sessionId);
-    
+
     const existing = await sessionRepository.findById(sessionId);
     if (!existing) {
       throw new InvalidRequestException(messageConstant.SESSION_NOT_FOUND);

@@ -9,7 +9,7 @@ const {
   pgEnum,
 } = require("drizzle-orm/pg-core");
 const { genderEnum, GenderTypeValues } = require("../enumData/genderEnum");
-const genderEnumDb = pgEnum("gender", GenderTypeValues);
+const genderEnumDb = pgEnum("gender_type", GenderTypeValues);
 
 const Patient = pgTable("patient", {
   id: serial("id").primaryKey(),
@@ -18,7 +18,7 @@ const Patient = pgTable("patient", {
   fullName: varchar("full_name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
-  gender: genderEnumDb("gender").notNull(),
+  gender: genderEnumDb("gender_type").notNull(),
   dateOfBirth: date("date_of_birth").notNull(),
   age: integer("age").notNull(),
   phone: varchar("phone", { length: 10 }).notNull(),

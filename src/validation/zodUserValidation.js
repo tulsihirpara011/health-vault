@@ -1,8 +1,9 @@
 const { z } = require("zod");
 const messageConstant = require("../constant/messageConstant");
-const { genderValues } = require("../enumData/genderEnum");
+const { GenderTypeValues } = require("../enumData/genderEnum");
 
-const genderZod = z.enum(genderValues,messageConstant.INVALID_GENDER);
+const genderZod = z.enum(GenderTypeValues, messageConstant.INVALID_GENDER);
+const { InvalidRequestException } = require("../excptions/ApiError");
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const UPPER_REGEX = /[A-Z]/;
@@ -10,7 +11,6 @@ const LOWER_CASE = /[a-z]/;
 const NUMBER = /[0-9]/;
 const SYMBOL = /[@$!%*?&]/;
 const ALPHABETS = /^[A-Za-z\s]+$/s;
-
 
 const nameField = z
   .string(messageConstant.NAME_REQUIRED)
@@ -36,12 +36,11 @@ const password = z
   .refine((val) => NUMBER.test(val), messageConstant.MUST_NUM)
   .refine((val) => SYMBOL.test(val), messageConstant.MUST_SYMBOL);
 
-  const patientCode= z.string().optional();
+const patientCode = z.string().optional();
 const dateOfBirth = z.coerce.date();
 const phone = z
   .string(messageConstant.PHONE_NUMBER_REQUIRED)
   .regex(/^\d{10}$/, messageConstant.PHONE_NUMBER_MUST_BE_10_DIGITS);
-
 
 function calculateAge(dob) {
   const birthDate = new Date(dob);
@@ -57,15 +56,14 @@ function calculateAge(dob) {
   return age;
 }
 
-
 const userSchema = z
   .object({
-    patientCode:patientCode,
+    patientCode: patientCode,
     userName: nameField,
     fullName: nameField,
     email: email,
     password: password,
-    gender:genderZod,
+    gender: genderZod,
     dateOfBirth: dateOfBirth,
     phone: phone,
   })
@@ -76,16 +74,17 @@ const userSchema = z
         age: calculateAge(data.dateOfBirth),
       };
     } catch (err) {
-      throw new Error("Age calculation failed ");
+      throw new InvalidRequestException(messageConstant.AGE_CALCULATION_FAILED);
     }
   });
 //updated user schema for update operation
-const updateUserSchema = z.object({
-  userName: nameField.optional(), 
-  password: password.optional(),
-  fullName: nameField.optional(),
-  email: email.optional(),
-  gender:genderZod .optional(),
+const updateUserSchema = z
+  .object({
+    userName: nameField.optional(),
+    password: password.optional(),
+    fullName: nameField.optional(),
+    email: email.optional(),
+    gender: genderZod.optional(),
     dateOfBirth: dateOfBirth.optional(),
     phone: phone.optional(),
   })

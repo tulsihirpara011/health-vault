@@ -1,11 +1,11 @@
 {
-  "id": "8e1dfc23-741b-4fc3-a101-c8638c008c99",
-  "prevId": "ab258ec2-92d3-4390-a9c7-12219d65b2aa",
+  "id": "2872fc13-96e0-4038-86ac-c3df90c70b84",
+  "prevId": "39b1a534-a7ed-445d-a07e-a9beb3a8bb82",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users": {
-      "name": "users",
+    "public.patient": {
+      "name": "patient",
       "schema": "",
       "columns": {
         "id": {
@@ -44,9 +44,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "gender": {
-          "name": "gender",
-          "type": "gender_enum",
+        "genders": {
+          "name": "genders",
+          "type": "gender_type",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
@@ -95,15 +95,15 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "users_patient_code_unique": {
-          "name": "users_patient_code_unique",
+        "patient_patient_code_unique": {
+          "name": "patient_patient_code_unique",
           "nullsNotDistinct": false,
           "columns": [
             "patient_code"
           ]
         },
-        "users_email_unique": {
-          "name": "users_email_unique",
+        "patient_email_unique": {
+          "name": "patient_email_unique",
           "nullsNotDistinct": false,
           "columns": [
             "email"
@@ -180,17 +180,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "session_user_id_users_id_fk": {
-          "name": "session_user_id_users_id_fk",
+        "session_user_id_patient_id_fk": {
+          "name": "session_user_id_patient_id_fk",
           "tableFrom": "session",
-          "tableTo": "users",
+          "tableTo": "patient",
           "columnsFrom": [
             "user_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -246,17 +246,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "health_records_user_id_users_id_fk": {
-          "name": "health_records_user_id_users_id_fk",
+        "health_records_user_id_patient_id_fk": {
+          "name": "health_records_user_id_patient_id_fk",
           "tableFrom": "health_records",
-          "tableTo": "users",
+          "tableTo": "patient",
           "columnsFrom": [
             "user_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -282,18 +282,11 @@
           "primaryKey": false,
           "notNull": true
         },
-        "documents": {
-          "name": "documents",
-          "type": "documents",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "file_name": {
           "name": "file_name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "file_path": {
           "name": "file_path",
@@ -301,26 +294,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "file": {
-          "name": "file",
-          "type": "file",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "file_size": {
           "name": "file_size",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'Pending'"
         },
         "OCR_extracted_text": {
           "name": "OCR_extracted_text",
@@ -344,13 +322,13 @@
           "name": "hospital_name",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "doctor_name": {
           "name": "doctor_name",
           "type": "varchar(25)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "reamrk": {
           "name": "reamrk",
@@ -382,17 +360,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "documents_user_id_users_id_fk": {
-          "name": "documents_user_id_users_id_fk",
+        "documents_user_id_patient_id_fk": {
+          "name": "documents_user_id_patient_id_fk",
           "tableFrom": "documents",
-          "tableTo": "users",
+          "tableTo": "patient",
           "columnsFrom": [
             "user_id"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
