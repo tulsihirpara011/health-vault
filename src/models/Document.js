@@ -6,38 +6,42 @@ const {
   timestamp,
   boolean,
   text,
-  date
-
+  date,
+  pgEnum,
 } = require("drizzle-orm/pg-core");
-const { User } = require("./patient");
-const { fileEnum, fileTypeValue } = require("../enumData/fileEnum");
-const { ocrStatus, StatusType, StatusTypeVale } = require("../enumData/ocrStatus");
-const { documentTypeEnum, documentTypeValue } = require("../enumData/documentType");
-const { pgEnum } = require("drizzle-orm/pg-core");
+const { Patient } = require("./patient");
+const { fileType, FileTypesValues } = require("../enumData/fileEnum");
+const { StatusTypeValues, StatusType } = require("../enumData/ocrStatus");
+const { documentTypeEnum, documentType } = require("../enumData/documentType");
 
+// const fileTypeEnumDb = pgEnum("file_type", FileTypesValues);
+// const ocrStatusEnumDb = pgEnum("ocr_status", StatusTypeValues);
+// const documentTypeEnumDb = pgEnum("document_type", documentTypeEnum);
 
 const Document = pgTable("documents", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")
     .notNull()
-    .references(() => User.id, { onDelete: "cascade" }),
-  documentType:pgEnum("document_type", documentTypeValue).notNull(),
-  fileName:varchar("file_name",{ length: 255 }).notNull(),
-  fileStoragePath:text("file_path"),
-  fileType:pgEnum("file_type", fileTypeValue).notNull(),
-  fileSize:integer("file_size"),
-  OCRStatus:pgEnum("status", StatusTypeVale)
-    .default(StatusType.PENDING)
-    .notNull(),
-  ocrextractedText:text("OCR_extracted_text"),
-  structuredExtractedData:varchar("structured_extracted_data"),
-  reportDate:date("report_date"),
-  hospitalName:varchar("hospital_name").notNull(),
-  doctorName:varchar("doctor_name" , {length:25}).notNull(),
-  remarks:text("reamrk"),
+    .references(() => Patient.id, { onDelete: "cascade" }),
+  // documentType: documentTypeEnumDb("documentType"),
+  fileName: varchar("file_name", { length: 255 }),
+  fileStoragePath: text("file_path"),
+  // fileType: fileTypeEnumDb("fileType"),
+  fileSize: integer("file_size"),
+  // OCRStatus: ocrStatusEnumDb("ocrtatus")
+  //   .default(StatusType.PENDING)
+  // .notNull(),
+  ocrextractedText: text("OCR_extracted_text"),
+  structuredExtractedData: varchar("structured_extracted_data"),
+  reportDate: date("report_date"),
+  hospitalName: varchar("hospital_name"),
+  doctorName: varchar("doctor_name", { length: 25 }),
+  remarks: text("reamrk"),
   softDelete: boolean("soft_delete").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-module.exports = { Document };
+module.exports = {
+  Document,
+};

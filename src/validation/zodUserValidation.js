@@ -1,8 +1,8 @@
 const { z } = require("zod");
 const messageConstant = require("../constant/messageConstant");
-const { genderValues } = require("../enumData/genderEnum");
+const { genderTypeValue } = require("../enumData/genderEnum");
 
-const genderZod = z.enum(genderValues,messageConstant.INVALID_GENDER);
+const genderZod = z.enum(genderTypeValue, messageConstant.INVALID_GENDER);
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const UPPER_REGEX = /[A-Z]/;
@@ -10,7 +10,6 @@ const LOWER_CASE = /[a-z]/;
 const NUMBER = /[0-9]/;
 const SYMBOL = /[@$!%*?&]/;
 const ALPHABETS = /^[A-Za-z\s]+$/s;
-
 
 const nameField = z
   .string(messageConstant.NAME_REQUIRED)
@@ -36,72 +35,133 @@ const password = z
   .refine((val) => NUMBER.test(val), messageConstant.MUST_NUM)
   .refine((val) => SYMBOL.test(val), messageConstant.MUST_SYMBOL);
 
-  const patientCode= z.string().optional();
-const dateOfBirth = z.coerce.date();
+const patientCode = z.string().optional();
+// const dateOfBirth = z.coerce.date();
+const dateOfBirth = z
+  .string()
+  .refine((val) => !isNaN(new Date(val).getTime()), {
+    message: "Invalid date format",
+  })
+  .transform((val) => new Date(val));
 const phone = z
   .string(messageConstant.PHONE_NUMBER_REQUIRED)
   .regex(/^\d{10}$/, messageConstant.PHONE_NUMBER_MUST_BE_10_DIGITS);
-
-
 function calculateAge(dob) {
-  const birthDate = new Date(dob);
+  if (!(dob instanceof Date) || isNaN(dob)) {
+    throw new Error("Invalid DOB");
+  }
+
   const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-  if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
-  ) {
+  let age = today.getFullYear() - dob.getFullYear();
+
+  const monthDiff = today.getMonth() - dob.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
     age--;
   }
+
   return age;
 }
 
+// function calculateAge(dob) {
+//   const birthDate = new Date(dob);
+//   const today = new Date();
+//   let age = today.getFullYear() - birthDate.getFullYear();
+//   const monthDiff = today.getMonth() - birthDate.getMonth();
+//   if (
+//     monthDiff < 0 ||
+//     (monthDiff === 0 && today.getDate() < birthDate.getDate())
+//   ) {
+//     age--;
+//   }
+//   return age;
+// }
 
 const userSchema = z
   .object({
-    patientCode:patientCode,
+    patientCode: patientCode,
     userName: nameField,
     fullName: nameField,
     email: email,
     password: password,
-    gender:genderZod,
+    gender: genderZod,
     dateOfBirth: dateOfBirth,
     phone: phone,
   })
   .transform((data) => {
-    try {
-      return {
-        ...data,
-        age: calculateAge(data.dateOfBirth),
-      };
-    } catch (err) {
-      throw new Error("Age calculation failed ");
-    }
+    if (!data.dateOfBirth) return data;
+
+    return {
+      ...data,
+      age: calculateAge(data.dateOfBirth),
+    };
   });
+// .transform((data) => {
+//   try {
+//     return {
+//       ...data,
+//       age: calculateAge(data.dateOfBirth),
+//     };
+//   } catch (err) {
+//     throw new Error("Age calculation failed ");
+//   }
+// });
 //updated user schema for update operation
-const updateUserSchema = z.object({
-  userName: nameField.optional(), 
-  password: password.optional(),
-  fullName: nameField.optional(),
-  email: email.optional(),
-  gender:genderZod .optional(),
+const updateUserSchema = z
+  .object({
+    userName: nameField.optional(),
+    password: password.optional(),
+    fullName: nameField.optional(),
+    email: email.optional(),
+    gender: genderZod.optional(),
     dateOfBirth: dateOfBirth.optional(),
     phone: phone.optional(),
   })
   .transform((data) => {
-    try {
-      return {
-        ...data,
-        age: calculateAge(data.dateOfBirth),
-      };
-    } catch (err) {
-      throw new Error("Age calculation failed ");
-    }
+    if (!data.dateOfBirth) return data;
+
+    return {
+      ...data,
+      age: calculateAge(data.dateOfBirth),
+    };
   });
+// .transform((data) => {
+//   try {
+//     return {
+//       ...data,
+//       age: calculateAge(data.dateOfBirth),
+//     };
+//   } catch (err) {
+//     throw new Error("Age calculation failed ");
+//   }
+// });
+
 const loginUserSchema = z.object({
   email: email,
   password: password,
 });
 
-module.exports = { userSchema, updateUserSchema, loginUserSchema };
+//forgot passwored schema
+const forgotPasswordSchema = z.object({
+  email: email,
+});
+
+//reset password schema
+const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Token is required"),
+    password: password,
+    confirmPassword: password,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: messageConstant.PASSWORDS_DO_NOT_MATCH,
+    path: ["confirmPassword"],
+  });
+
+module.exports = {
+  userSchema,
+  updateUserSchema,
+  loginUserSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+};

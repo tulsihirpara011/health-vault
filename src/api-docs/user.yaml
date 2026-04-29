@@ -184,3 +184,58 @@ paths:
           description: Logout successful
         404:
           description: Session not found
+  /patient/forgot-password:
+    post:
+      summary: Forgot Password (Send reset link to email)
+      tags:
+        - User
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  example: "abc@gmail.com"
+      responses:
+        200:
+          description: Reset password link sent successfully
+        404:
+          description: User not found
+
+  /patient/reset-password:
+    post:
+      summary: Reset Password using token
+      tags:
+        - User
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+                - confirmPassword
+              properties:
+                token:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                password:
+                  type: string
+                  example: "NewPass@123"
+                confirmPassword:
+                  type: string
+                  example: "NewPass@123"
+      responses:
+        200:
+          description: Password reset successfully
+        400:
+          description: Invalid or expired token

@@ -27,6 +27,8 @@ const sessionRepositoty = require("../repositories/sessionRepository");
 const documentRepository = require("../repositories/doucumentRepository");
 const healthRecordsRepository = require("../repositories/healthRecordsRepository");
 const sessionRepository = require("../repositories/sessionRepository");
+const crypto = require("crypto");
+const { sendResetEmail } = require("../utils/mailer");
 class patientService {
   //Login Patient
   async loginPatient(data) {
@@ -34,16 +36,24 @@ class patientService {
     if (!validation.success) {
       throw new InvalidRequestException("Validation failed", validation.error);
     }
-    const userData = await patientRepository.loginPatient(validation.data.email,validation.data.password);
+    const userData = await patientRepository.loginPatient(
+      validation.data.email,
+      validation.data.password,
+    );
     if (!userData) {
       throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
-    const isMatch = await bcrypt.compare(validation.data.password, userData.password);
+    const isMatch = await bcrypt.compare(
+      validation.data.password,
+      userData.password,
+    );
     if (!isMatch) {
       throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
     //Sessiondata
-    const session = await sessionRepositoty.createSession({ userId: userData.id });
+    const session = await sessionRepositoty.createSession({
+      userId: userData.id,
+    });
     const payload = { session: session.id };
     return JwtUtils.generateToken(payload);
   }
@@ -97,20 +107,92 @@ class patientService {
     if (validatedData.password) {
       validatedData.password = await bcrypt.hash(validatedData.password, 10);
     }
-    const updatedUser = await patientRepository.updatePatient(id, validatedData);
+    const updatedUser = await patientRepository.updatePatient(
+      id,
+      validatedData,
+    );
     return updatedUser;
   }
 
+  // forgot passwored
+  async forgotPassword(email) {
+    if (!email) {
+      throw new InvalidRequestException(messageConstant.EMAIL_REQUIRED);
+    }
+
+    const user = await patientRepository.findPatientByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(messageConstant.USER_NOT_FOUND);
+    }
+
+    // generate token via utility
+    const token = JwtUtils.generateForgotPasswordToken(user.id);
+
+    // save token + expiry
+    await patientRepository.updateResetToken(user.id, {
+      resetToken: token,
+      resetTokenExpiry: new Date(Date.now() + 10 * 60 * 1000),
+    });
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    //  send email
+    try {
+      await sendResetEmail(user.email, resetLink);
+    } catch (err) {
+      console.error("Email sending failed:", err);
+      throw new InvalidRequestException("Failed to send reset email");
+    }
+
+    return true;
+  }
+  // reset password
+  async resetPassword(token, newPassword) {
+    if (!token) {
+      throw new InvalidRequestException("Token is required");
+    }
+
+    const decoded = JwtUtils.verifyToken(token);
+
+    if (!decoded || decoded.accessType !== "FORGOT_PASSWORD") {
+      throw new UnauthorizedException("Invalid token");
+    }
+
+    const user = await patientRepository.getPatientById(decoded.userId);
+
+    if (!user) {
+      throw new NotFoundException(messageConstant.USER_NOT_FOUND);
+    }
+
+    if (user.resetToken !== token) {
+      throw new UnauthorizedException("Invalid token");
+    }
+
+    if (new Date() > new Date(user.resetTokenExpiry)) {
+      throw new UnauthorizedException("Token expired");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await patientRepository.updatePassword(user.id, {
+      password: hashedPassword,
+      resetToken: null,
+      resetTokenExpiry: null,
+    });
+
+    return true;
+  }
   //delete patient by id
   async deletePatient(id) {
-      if (!id) {
-        throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
-      }
-      const result = await patientRepository.deletePatient(id);
-      if (!result) {
-        throw new NotFoundException(messageConstant.USER_NOT_FOUND);
-      }
+    if (!id) {
+      throw new InvalidRequestException(messageConstant.INVALID_REQUEST);
     }
+    const result = await patientRepository.deletePatient(id);
+    if (!result) {
+      throw new NotFoundException(messageConstant.USER_NOT_FOUND);
+    }
+  }
 
   //permanent delete patient by id
   async permanentDeletePatient(id) {
@@ -127,12 +209,12 @@ class patientService {
   // logout user
   async logout(token) {
     if (!token) {
-      throw new InvalidRequestException(messageConstant.INVALID_TOKEN); 
+      throw new InvalidRequestException(messageConstant.INVALID_TOKEN);
     }
     const decoded = JwtUtils.checkValidateToken(token);
-    const sessionId=decoded.session;
+    const sessionId = decoded.session;
     console.log(sessionId);
-    
+
     const existing = await sessionRepository.findById(sessionId);
     if (!existing) {
       throw new InvalidRequestException(messageConstant.SESSION_NOT_FOUND);

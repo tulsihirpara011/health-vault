@@ -22,19 +22,20 @@ const messageConstant = {
   USER_BLOCKED: "User Blocked",
   EMAIL_VERIFY_SUCCESSFULLY: "Email is verified successfully",
   EMAIL_ALREADY_EXISTS: "Email is already exists",
-  USER_PERMANENTLY_DELETED_SUCCESSFULLY: "User Permanently Deleted Successfully",
+  USER_PERMANENTLY_DELETED_SUCCESSFULLY:
+    "User Permanently Deleted Successfully",
   USER_FETCHED_SUCCESSFULLY: "User Fetched Successfully",
   USER_LIST_FETCHED_SUCCESSFULLY: "User List Fetched Successfully",
 
   //EXCEPTION
-  INVALID_SESSIONID:"Invalid session id",
+  INVALID_SESSIONID: "Invalid session id",
   SESSION_NOT_FOUND: "Session not found",
   LOGOUT_SUCCESS: "Logout successfully",
   ALREADY_LOGOUT: "Already logout",
-  INVALID_TOKEN:"Invalid token",
-  VALIDATION_FAILED:"Validation failed",
+  INVALID_TOKEN: "Invalid token",
+  VALIDATION_FAILED: "Validation failed",
   INVALID_REQUEST: "Invalid request",
-  ALREADY_EXIST:"Already exist",
+  ALREADY_EXIST: "Already exist",
   NOT_FOUND: "Not found",
   USER_NOT_FOUND: "user not found",
   UNAUTHORIZED: "Unauthorized",
@@ -49,11 +50,12 @@ const messageConstant = {
 
   //VALIDATIORS
   VALID_EMAIL: "Please enter valid email",
-  ENTER_VALID_GENDER:"Enter a valid gender",
-  HOSPITAL_NAME_REQUIRED:"Hospital name is required",
-  VALID_FILE_SIZE:"File size exceeds the 25MB limit. Please upload a smaller file.",
-  ENTER_VALID_FILETYPE:"Please enter a valid file ",
-  VALID_DOCUMENT:"Please enter valid document type",
+  ENTER_VALID_GENDER: "Enter a valid gender",
+  HOSPITAL_NAME_REQUIRED: "Hospital name is required",
+  VALID_FILE_SIZE:
+    "File size exceeds the 25MB limit. Please upload a smaller file.",
+  ENTER_VALID_FILETYPE: "Please enter a valid file ",
+  VALID_DOCUMENT: "Please enter valid document type",
   EMAIL_REQUIRED: "Please Enter Email",
   EMAIL_TOO_SHORT: "Email must be atleast 5 character",
   EMAIL_TOO_LONG: "Email is too long",
@@ -76,5 +78,13 @@ const messageConstant = {
   MUST_NUM: "Must contain number",
   MUST_SYMBOL: "Must contain special character",
   ONLY_ALPHABETS: "only alphabets are allowed",
+
+  //
+  EMAIL_REQUIRED: "Email is required",
+  RESET_PASSWORED_LINK: "Reset password link sent to email",
+  PASSWORDS_DO_NOT_MATCH: "Passwords do not match",
+  RESET_PASSWORED_LINK: "Reset password link sent to email",
+  PASSWORD_RESET_SUCCESS: "Password reset successfully",
+  INVALID_TOKEN: "Invalid or expired token",
 };
 module.exports = messageConstant;

@@ -17,11 +17,8 @@ class patientRepository {
 
   //Create User
   async createPatient(data) {
-    const result= await db
-      .insert(Patient)
-      .values(data)
-      .returning();
-    return result[0]??null;
+    const result = await db.insert(Patient).values(data).returning();
+    return result[0] ?? null;
   }
 
   //get user by id if not delted
@@ -31,18 +28,19 @@ class patientRepository {
       .from(Patient)
       .where(and(eq(Patient.id, id), eq(Patient.softDelete, false)))
       .limit(1);
-    return result[0]??null;
+    return result[0] ?? null;
   }
 
   //get all user
   async getPatientList() {
-    const result= await db
+    const result = await db
       .select()
       .from(Patient)
       .where(eq(Patient.softDelete, false));
-    return result[0] ?? null;
+    return result ?? null;
   }
 
+  //update user by id if not deleted
   async updatePatient(id, data) {
     const result = await db
       .update(Patient)
@@ -53,7 +51,48 @@ class patientRepository {
       .where(and(eq(Patient.id, Number(id)), eq(Patient.softDelete, false)))
       .returning();
 
-    return result[0]??null;
+    return result[0] ?? null;
+  }
+
+  //find by email
+  async findPatientByEmail(email) {
+    const result = await db
+      .select()
+      .from(Patient)
+      .where(and(eq(Patient.email, email), eq(Patient.softDelete, false)))
+      .limit(1);
+
+    return result[0] ?? null;
+  }
+
+  //save reset token
+  async updateResetToken(userId, data) {
+    const result = await db
+      .update(Patient)
+      .set({
+        resetToken: data.resetToken,
+        resetTokenExpiry: data.resetTokenExpiry,
+        updatedAt: new Date(),
+      })
+      .where(eq(Patient.id, userId))
+      .returning();
+
+    return result[0] ?? null;
+  }
+  //updated password
+  async updatePassword(userId, data) {
+    const result = await db
+      .update(Patient)
+      .set({
+        password: data.password,
+        resetToken: null,
+        resetTokenExpiry: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(Patient.id, userId))
+      .returning();
+
+    return result[0] ?? null;
   }
 
   //soft delete
@@ -67,16 +106,17 @@ class patientRepository {
       .where(and(eq(Patient.id, id), eq(Patient.softDelete, false)))
       .returning();
 
-    return result[0]??null;
+    return result[0] ?? null;
   }
+  //email check
   async findPatientByEmail(email) {
-    const user = await db
+    const result = await db
       .select()
       .from(Patient)
       .where(and(eq(Patient.email, email), eq(Patient.softDelete, false)))
       .limit(1);
 
-    return user.length ? user[0] : null;
+    return result[0] ?? null;
   }
 
   //permanent delete patient by id

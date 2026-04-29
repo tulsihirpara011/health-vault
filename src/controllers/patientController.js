@@ -8,6 +8,8 @@ const {
   userSchema,
   loginUserSchema,
   updateUserSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } = require("../validation/zodUserValidation");
 const { InvalidRequestException } = require("../excptions/ApiError");
 
@@ -74,7 +76,10 @@ class patientController {
   // Update Patient
   updatePatient = async (req, res, next) => {
     try {
-      const result = await patientService.updatePatient(req?.params?.id, req?.body);
+      const result = await patientService.updatePatient(
+        req?.params?.id,
+        req?.body,
+      );
       return GeneralResponse.updated(
         res,
         result,
@@ -82,6 +87,45 @@ class patientController {
       );
     } catch (error) {
       console.log("error in update user :", error);
+      next(error);
+    }
+  };
+
+  //forget passwored
+  forgotPassword = async (req, res, next) => {
+    try {
+      const validatedData = forgotPasswordSchema.parse(req.body);
+
+      const result = await patientService.forgotPassword(validatedData.email);
+      return GeneralResponse.success(
+        res,
+        result,
+        messageConstant.RESET_PASSWORED_LINK,
+      );
+    } catch (error) {
+      console.log("error in forgot password:", error);
+      next(error);
+    }
+  };
+
+  // reset password
+  resetPassword = async (req, res, next) => {
+    try {
+      // validate request
+      const validatedData = resetPasswordSchema.parse(req.body);
+
+      const result = await patientService.resetPassword(
+        validatedData.token,
+        validatedData.password,
+      );
+
+      return GeneralResponse.success(
+        res,
+        result,
+        messageConstant.PASSWORD_RESET_SUCCESS,
+      );
+    } catch (error) {
+      console.log("error in reset password:", error);
       next(error);
     }
   };
@@ -104,7 +148,9 @@ class patientController {
   // Permanent Delete Patient
   permanentDeletePatient = async (req, res, next) => {
     try {
-      const result = await patientService.permanentDeletePatient(req?.params?.id);
+      const result = await patientService.permanentDeletePatient(
+        req?.params?.id,
+      );
       return GeneralResponse.success(
         res,
         result,
