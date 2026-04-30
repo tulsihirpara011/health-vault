@@ -106,9 +106,16 @@ const listDocumentsPaginatedSchema = listDocumentsFilterSortSchema
   })
   .strict();
 
+const downloadFileQuerySchema = z
+  .object({
+    fileKey: z.string().trim().min(1, errorConstants.FILE_KEY_REQUIRED),
+  })
+  .strict();
+
 module.exports = {
   createDocumentSchema,
   listDocumentsFilterSortSchema,
   listDocumentsPaginatedSchema,
+  downloadFileQuerySchema,
   listDocumentsQuerySchema,
 };

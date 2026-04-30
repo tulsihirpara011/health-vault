@@ -1,4 +1,4 @@
-const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 require("dotenv").config();
 const { s3Client } = require("../configs/s3");
 const { errorConstants } = require("../constants/errorConstants");
@@ -35,7 +35,6 @@ class DocumentService {
       fileName: file.originalname,
       fileSize: file.size,
       documentType: docType.documentType,
-      s3Key: fileKey,
     };
     await s3Client.send(filedata);
     const validData = await validateSchema(createDocumentSchema, fileinfo);
@@ -93,7 +92,8 @@ class DocumentService {
     return deletedDocument;
   }
 
-  async getDownloadUrl(fileKey) {
+  // download document from s3 bucket using file key
+  async getDownloadUrl(fileKey, fileName = "document") {
     if (!fileKey) {
       throw new InvalidRequestException(messageConstants.FILE_KEY_REQUIRED);
     }
@@ -101,11 +101,30 @@ class DocumentService {
     const command = new GetObjectCommand({
       Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
       Key: fileKey,
+
+      // force browser to download file
+      ResponseContentDisposition: `attachment; filename="${fileName}"`,
     });
+
     const url = await getSignedUrl(s3Client, command, {
-      expiresIn: 600,
-    }); //url valid for 10 minutes
+      expiresIn: 600, // 10 minutes
+    });
+
     return url;
+  }
+
+  //delete document from s3 bucket using file key
+  async deleteFile(fileKey) {
+    if (!fileKey) {
+      throw new InvalidRequestException(messageConstants.FILE_KEY_REQUIRED);
+    }
+
+    const command = new DeleteObjectCommand({
+      Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
+      Key: fileKey,
+    });
+    await s3Client.send(command);
+    return { message: messageConstants.DOCUMENT_DELETED };
   }
 }
 

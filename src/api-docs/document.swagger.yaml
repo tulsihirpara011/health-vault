@@ -216,3 +216,19 @@ paths:
       responses:
         "200":
           description: Download URL fetched successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /documents/delete:
+    delete:
+      summary: Delete file from S3 using file key
+      tags: [Document]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/fileKeyParam"
+      responses:
+        "200":
+          description: File deleted successfully
