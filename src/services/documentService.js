@@ -28,7 +28,7 @@ class DocumentService {
     }
     const fileKey = `${this.folder}/${Date.now()}-${file.originalname}`;
     const filedata = new PutObjectCommand({
-      Bucket: process.env.AWS_BUCKET,
+      Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
       Key: fileKey,
       Body: file.buffer,
     });

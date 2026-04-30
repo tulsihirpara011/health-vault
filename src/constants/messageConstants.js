@@ -26,6 +26,7 @@ const messageConstants = Object.freeze({
   SESSION_CREATED: "Session created successfully",
   SESSION_FETCHED: "Session fetched successfully",
   TOKEN_REFRESHED: "Token refreshed successfully",
+  FILE_IS_REQUIRED: "File is required",
 });
 
 module.exports = { messageConstants };
