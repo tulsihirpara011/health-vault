@@ -38,6 +38,12 @@ async function deleteDocument(req, res) {
   return successResponse(res, result, messageConstants.DOCUMENT_DELETED);
 }
 
+async function getDownloadFile(req, res) {
+  const { fileKey } = req.query;
+  const result = await documentService.getDownloadFile(fileKey);
+  return successResponse(res, result, messageConstants.DOCUMENT_DOWNLOAD_URL_FETCHED);
+}
+
 module.exports = {
   addDocument,
   deleteDocument,
@@ -45,4 +51,5 @@ module.exports = {
   getDocumentList,
   listDocuments,
   listDocumentsPaginated,
+  getDownloadFile,
 };

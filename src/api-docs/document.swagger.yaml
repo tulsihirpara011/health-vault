@@ -17,6 +17,12 @@ components:
       schema:
         type: string
         format: uuid
+    fileKeyParam:
+      in: query
+      name: fileKey
+      required: true
+      schema:
+        type: string
 
   schemas:
     CreateDocumentRequest:
@@ -198,3 +204,15 @@ paths:
         - $ref: "#/components/parameters/UuidParam"
       responses:
         "200": { description: Deleted }
+
+  /documents/download-url:
+    get:
+      summary: Get download URL from S3
+      tags: [Document]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/fileKeyParam"
+      responses:
+        "200":
+          description: Download URL fetched successfully

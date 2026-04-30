@@ -1,4 +1,4 @@
-const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 require("dotenv").config();
 const { s3Client } = require("../configs/s3");
 const { errorConstants } = require("../constants/errorConstants");
@@ -13,40 +13,36 @@ const {
   listDocumentsQuerySchema,
   validateSchema,
 } = require("../validations");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 class DocumentService {
   async createDocument(userId, file, docType) {
-    console.log(userId);
-    console.log(docType.documentType);
-    console.log(file);
-
     if (!file) {
       throw new InvalidRequestException(messageConstants.FILE_IS_REQUIRED);
     }
     if (!docType) {
       throw new InvalidRequestException(messageConstants.DOCUMENT_TYPE_IS_REQUIRED);
     }
-    const fileKey = `${this.folder}/${Date.now()}-${file.originalname}`;
+    const fileKey = `uploads/${Date.now()}-${file.originalname}`;
     const filedata = new PutObjectCommand({
       Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
       Key: fileKey,
       Body: file.buffer,
     });
     const fileinfo = {
-      ContentType: file.mimetype,
+      fileType: file.mimetype,
+      fileStoragePath: fileKey,
       fileName: file.originalname,
       fileSize: file.size,
       documentType: docType.documentType,
+      s3Key: fileKey,
     };
-    console.log(fileinfo);
     await s3Client.send(filedata);
     const validData = await validateSchema(createDocumentSchema, fileinfo);
-    console.log("validData", validData);
 
     return documentRepository.create({
-      fileKey,
       userId,
-      validData,
+      ...validData,
     });
   }
 
@@ -95,6 +91,21 @@ class DocumentService {
     }
 
     return deletedDocument;
+  }
+
+  async getDownloadUrl(fileKey) {
+    if (!fileKey) {
+      throw new InvalidRequestException(messageConstants.FILE_KEY_REQUIRED);
+    }
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
+      Key: fileKey,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: 600,
+    }); //url valid for 10 minutes
+    return url;
   }
 }
 
