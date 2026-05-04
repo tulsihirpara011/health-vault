@@ -27,6 +27,7 @@ class DocumentService {
       Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
       Key: fileKey,
       Body: file.buffer,
+      ContentType: file.mimetype,
     });
 
     const fileStoragePath = `https://${process.env.PATIENT_DOCUMENTS_BUCKET}.s3.amazonaws.com/${fileKey}`;
@@ -98,7 +99,7 @@ class DocumentService {
   }
 
   // download document from s3 bucket using file key
-  async getDownloadUrl(fileKey, fileName = "document") {
+  async getDownloadUrl(fileKey) {
     if (!fileKey) {
       throw new InvalidRequestException(messageConstants.FILE_KEY_REQUIRED);
     }
@@ -107,15 +108,15 @@ class DocumentService {
       Bucket: process.env.PATIENT_DOCUMENTS_BUCKET,
       Key: fileKey,
 
-      // force browser to download file
-      ResponseContentDisposition: `attachment; filename="${fileName}"`,
+      // open file in browser instead of download
+      ResponseContentDisposition: "inline",
     });
 
-    const url = await getSignedUrl(s3Client, command, {
-      expiresIn: 600, // 10 minutes
+    const signurl = await getSignedUrl(s3Client, command, {
+      expiresIn: 1800, // 30 minutes
     });
 
-    return url;
+    return signurl;
   }
 
   //delete document from s3 bucket using file key

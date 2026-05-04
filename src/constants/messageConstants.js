@@ -28,7 +28,7 @@ const messageConstants = Object.freeze({
   TOKEN_REFRESHED: "Token refreshed successfully",
   PATIENT_PROFILE_FETCHED: "Patient profile fetched successfully",
   FILE_IS_REQUIRED: "File is required",
-  DOCUMENT_DOWNLOAD_URL_FETCHED: "Document download URL fetched successfully",
+  DOCUMENT_DOWNLOAD_URL_FETCHED: "Document signed URL  fetched successfully",
 });
 
 module.exports = { messageConstants };
