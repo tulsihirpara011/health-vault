@@ -13,13 +13,13 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-  CREATE TYPE "document_type" AS ENUM ('discharge_summary', 'imaging_report', 'lab_report', 'other', 'prescription');
+  CREATE TYPE "document_type" AS ENUM ('family', 'medical_document', 'medication', 'insurance', 'other');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
 
 DO $$ BEGIN
-  CREATE TYPE "file_type" AS ENUM ('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'application/pdf', 'image/png', 'text/plain');
+  CREATE TYPE "file_type" AS ENUM ('application/document', 'image/jpeg', 'application/pdf', 'image/png', 'text/plain');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;

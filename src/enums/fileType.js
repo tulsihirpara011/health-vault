@@ -1,5 +1,5 @@
 const fileType = Object.freeze({
-  DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  DOCX: "application/document",
   JPEG: "image/jpeg",
   PDF: "application/pdf",
   PNG: "image/png",

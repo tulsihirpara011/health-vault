@@ -14,7 +14,6 @@ const {
   validateSchema,
 } = require("../validations");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-
 class DocumentService {
   async createDocument(userId, file, docType) {
     if (!file) {
@@ -29,16 +28,22 @@ class DocumentService {
       Key: fileKey,
       Body: file.buffer,
     });
+
+    const fileStoragePath = `https://${process.env.PATIENT_DOCUMENTS_BUCKET}.s3.amazonaws.com/${fileKey}`;
+
+    await s3Client.send(filedata);
+
     const fileinfo = {
       fileType: file.mimetype,
-      fileStoragePath: fileKey,
+      fileStoragePath,
       fileName: file.originalname,
       fileSize: file.size,
       documentType: docType.documentType,
+      s3Bucket: filedata.input.Bucket,
+      s3Key: filedata.input.Key,
     };
-    await s3Client.send(filedata);
-    const validData = await validateSchema(createDocumentSchema, fileinfo);
 
+    const validData = await validateSchema(createDocumentSchema, fileinfo);
     return documentRepository.create({
       userId,
       ...validData,

@@ -42,8 +42,8 @@ const createDocumentSchema = z
     // ocrStatus: z.enum(ocrStatusValue).default(ocrStatus.PENDING),
     // remarks: z.string().optional().nullable(),
     // reportDate: z.coerce.date().optional().nullable(),
-    // s3Bucket: z.string().trim().min(1).max(255),
-    // s3Key: z.string().trim().min(1).max(500),
+    s3Bucket: z.string().trim().min(1).max(255),
+    s3Key: z.string().trim().min(1).max(500),
     // structuredExtractedData: z.string().optional().nullable(),
   })
   .strict();

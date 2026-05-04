@@ -38,20 +38,10 @@ async function deleteDocument(req, res) {
   return successResponse(res, result, messageConstants.DOCUMENT_DELETED);
 }
 
-async function getDownloadFile(req, res, next) {
-  try {
-    const { fileKey } = req.query;
-
-    const result = await documentService.getDownloadUrl(fileKey);
-
-    res.setHeader("Content-Disposition", `attachment; filename="${fileKey.split("/").pop()}"`);
-
-    res.setHeader("Content-Type", result.ContentType || "application/octet-stream");
-
-    result.Body.pipe(res);
-  } catch (error) {
-    next(error);
-  }
+async function getDownloadFile(req, res) {
+  const { fileKey } = req.query;
+  const result = await documentService.getDownloadUrl(fileKey);
+  return successResponse(res, result, messageConstants.DOCUMENT_DOWNLOAD_URL_FETCHED);
 }
 
 async function deleteFile(req, res) {
