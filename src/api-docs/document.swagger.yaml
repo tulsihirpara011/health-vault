@@ -209,18 +209,22 @@ paths:
     get:
       summary: Get download URL from S3
       tags: [Document]
-      security:
-        - bearerAuth: []
       parameters:
-        - $ref: "#/components/parameters/fileKeyParam"
+        - in: query
+          name: filekey
+          required: true
+          schema:
+            type: string
+          description: S3 file key
       responses:
-        "200":
-          description: Download URL fetched successfully
-          content:
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
+        200:
+          description: URL generated successfully
+
+        400:
+          description: File key missing
+        500:
+          description: Server error
+
   /documents/delete:
     delete:
       summary: Delete file from S3 using file key
