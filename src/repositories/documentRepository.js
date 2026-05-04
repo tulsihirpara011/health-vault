@@ -161,8 +161,9 @@ class DocumentRepository {
   async findAllByFilterSortAndPagination({ filter = {}, page, sort = {} }) {
     const conditions = buildFilterSortConditions(filter);
     const orderClause = buildOrderClause(sort);
-    const offset = page.pageNumber * page.pageLimit;
+
     const limit = page.pageLimit;
+    const offset = (page.pageNumber - 1) * limit;
 
     const data = await db
       .select()
@@ -171,6 +172,7 @@ class DocumentRepository {
       .orderBy(orderClause)
       .limit(limit)
       .offset(offset);
+
     const totalRecordsResult = await db
       .select({ count: sql`count(*)` })
       .from(document)
