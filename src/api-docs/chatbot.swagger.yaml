@@ -16,8 +16,12 @@ components:
       type: object
       additionalProperties: false
       required:
+        - message
         - documentId
       properties:
+        message:
+          type: string
+          example: "what medicine i should take?"
         documentId:
           type: string
           format: uuid
@@ -37,6 +41,8 @@ components:
         data:
           type: object
           properties:
+            message:
+              type: string
             documentId:
               type: string
               format: uuid
@@ -72,6 +78,7 @@ paths:
             examples:
               generateSummary:
                 value:
+                  message: "what medicine i should take?"
                   documentId: "7f4c3f2e-7c1a-4f45-9d6e-3d8f2f1b1234"
 
       responses:
