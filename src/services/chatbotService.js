@@ -37,6 +37,7 @@ class chatbotService {
 
     return chatbotRepository.createSummary({
       userId,
+      Message: message,
       aiSummaryData: parsedResponse,
     });
   }
