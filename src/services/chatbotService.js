@@ -2,7 +2,7 @@ const { InvalidRequestException } = require("../exceptions/appError");
 const chatbotRepository = require("../repositories/chatbotRepository");
 const documentRepository = require("../repositories/documentRepository");
 const { errorConstants } = require("../constants/errorConstants");
-const model = require("../configs/aiConfig");
+const { model } = require("../configs/aiConfig");
 const { cleanOCRText } = require("../utils/textCleanUtils");
 const { detectIntent } = require("./aiService/intentDetection");
 const { getPromptByIntent } = require("./aiService/promptFinder");
@@ -32,13 +32,15 @@ class chatbotService {
     // const prompt=buildSummaryPrompt(message,docData);
     const result = await model.generateContent(prompt);
     const response = result.response.text();
+    // console.log("response==",response);
+
     const cleanResponse = cleanOCRText(response);
-    const parsedResponse = JSON.parse(cleanResponse);
+    // const parsedResponse = JSON.parse(cleanResponse);
 
     return chatbotRepository.createSummary({
       userId,
       Message: message,
-      aiSummaryData: parsedResponse,
+      aiSummaryData: cleanResponse,
     });
   }
 }
