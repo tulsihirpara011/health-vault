@@ -30,7 +30,7 @@ async function getPatientList(req, res) {
 }
 
 async function updatePatient(req, res) {
-  const result = await patientService.updatePatient(req.params.id, req.body);
+  const result = await patientService.updatePatient(req.params.id, req.file, req.body);
   return successResponse(res, result, messageConstants.PATIENT_UPDATED);
 }
 

@@ -177,7 +177,6 @@ class PatientService {
   async createPatient(payload) {
     const data = await validateSchema(createPatientSchema, payload);
     const existingPatient = await patientRepository.findByEmail(data.email);
-
     if (existingPatient) {
       throw new AlreadyExistsException(errorConstants.EMAIL_ALREADY_EXISTS);
     }
@@ -190,6 +189,7 @@ class PatientService {
       password,
       status: USER_STATUS.ACTIVE,
     });
+    console.log("patientData====", createdPatient);
 
     return sanitizePatient(createdPatient);
   }
@@ -217,9 +217,11 @@ class PatientService {
     };
   }
 
-  async updatePatient(id, payload) {
+  async updatePatient(id, file, payload) {
     const params = await validateSchema(idParamSchema, { id });
-    const data = await validateSchema(updatePatientSchema, payload);
+    const profileImageKey = file ? file.path : null;
+    const updatePatient = { profileImageKey, ...payload };
+    const data = await validateSchema(updatePatientSchema, updatePatient);
 
     if (data.email) {
       const patientWithEmail = await patientRepository.findByEmailExcludingId(

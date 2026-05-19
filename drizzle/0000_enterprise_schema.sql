@@ -19,7 +19,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-  CREATE TYPE "file_type" AS ENUM ('application/document', 'image/jpeg', 'application/pdf', 'image/png', 'text/plain');
+  CREATE TYPE "file_type" AS ENUM ('application/document', 'image/jpeg', 'application/pdf', 'image/png', 'text/plain','image/jpg');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
