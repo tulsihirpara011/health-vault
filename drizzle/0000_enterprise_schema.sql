@@ -30,6 +30,13 @@ EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
 
+CREATE TYPE "medication_type" AS ENUM ('TABLET','CAPSULE','SYRUP','DROP','INJECTION');
+CREATE TYPE "frequency_type" AS ENUM ('ONCE_DAILY','TWICE_DAILY','THREE_TIMES_DAILY','AS_NEEDED');
+CREATE TYPE food_type AS ENUM ('BEFORE_FOOD','AFTER_FOOD');
+CREATE TYPE best_taken AS ENUM ('MORNING','NOON','NIGHT','CUSTOM');
+CREATE TYPE medication_unit AS ENUM ('PILLS','ML','DROPS','UNITS');
+
+
 CREATE TABLE IF NOT EXISTS "patients" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "patient_code" varchar(32) NOT NULL UNIQUE,
@@ -105,6 +112,42 @@ CREATE TABLE IF NOT EXISTS "health_records" (
   "updated_at" timestamp DEFAULT now() NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS "medications" (
+  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+  "user_id" uuid NOT NULL
+    REFERENCES "patients"("id")
+    ON DELETE CASCADE,
+  "patient_code" varchar(32) NOT NULL,
+  "medication_name" text NOT NULL,
+  "medication_type" medication_type NOT NULL,
+  "prescribed_by" varchar(255),
+  "dose_per_intake" integer,
+  "frequency" frequency_type NOT NULL,
+  "medication_times" json,
+  "best_taken" varchar(50)[],
+  "food_frequency" food_type,
+  "start_date" date NOT NULL,
+  "end_date" date,
+  "ongoing" boolean DEFAULT false NOT NULL,
+  "total_quantity" integer DEFAULT 0,
+  "remaining_quantity" integer DEFAULT 0,
+  "dose_reminders" boolean DEFAULT false,
+  "unit" varchar(20) NOT NULL,
+  "daily_consumption" integer DEFAULT 0 NOT NULL,
+  "refill_alert" boolean DEFAULT false,
+  "reminder_before_minutes" integer DEFAULT 5 NOT NULL,
+  "notes" varchar(1000),
+  "created_at" timestamp DEFAULT now() NOT NULL,
+  "updated_at" timestamp DEFAULT now() NOT NULL,
+  "soft_delete" boolean DEFAULT false NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS "medications_patient_code_idx"
+ON "medications" ("patient_code");
+CREATE INDEX IF NOT EXISTS "medications_name_idx"
+ON "medications" ("medication_name");
+CREATE INDEX IF NOT EXISTS "medications_start_date_idx"
+ON "medications" ("start_date");
 CREATE INDEX IF NOT EXISTS "patients_status_idx" ON "patients" ("status");
 CREATE INDEX IF NOT EXISTS "patients_soft_delete_idx" ON "patients" ("soft_delete");
 CREATE INDEX IF NOT EXISTS "patients_email_idx" ON "patients" ("email");
