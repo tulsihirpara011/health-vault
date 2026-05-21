@@ -1,0 +1,478 @@
+openapi: 3.0.0
+
+info:
+  title: Medication Reminder API
+  version: 2.0.0
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    OccurrenceId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+    ReminderConfigId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    ReminderType:
+      type: string
+      enum:
+        - BEFORE_MEDICATION
+        - AFTER_MEDICATION
+        - REFILL_ALERT
+
+    ReminderStatus:
+      type: string
+      enum:
+        - PENDING
+        - SENT
+        - COMPLETED
+        - MISSED
+        - SKIPPED
+        - SNOOZED
+
+    ReminderOccurrence:
+      type: object
+
+      properties:
+        id:
+          type: string
+          format: uuid
+
+        reminderId:
+          type: string
+          format: uuid
+
+        patientId:
+          type: string
+          format: uuid
+
+        medicationId:
+          type: string
+          format: uuid
+
+        type:
+          $ref: "#/components/schemas/ReminderType"
+
+        status:
+          $ref: "#/components/schemas/ReminderStatus"
+
+        scheduledAt:
+          type: string
+          format: date-time
+
+        sentAt:
+          type: string
+          format: date-time
+          nullable: true
+
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+        snoozeUntil:
+          type: string
+          format: date-time
+          nullable: true
+
+        notificationSent:
+          type: boolean
+
+        responseMessage:
+          type: string
+          nullable: true
+
+        createdAt:
+          type: string
+          format: date-time
+
+        updatedAt:
+          type: string
+          format: date-time
+
+    ReminderConfig:
+      type: object
+
+      properties:
+        id:
+          type: string
+          format: uuid
+
+        patientId:
+          type: string
+          format: uuid
+
+        medicationId:
+          type: string
+          format: uuid
+
+        foodType:
+          type: string
+          enum:
+            - BEFORE_FOOD
+            - AFTER_FOOD
+            - WITH_FOOD
+
+        type:
+          $ref: "#/components/schemas/ReminderType"
+
+        refillAlertBeforeDays:
+          type: integer
+          example: 1
+
+        scheduledAt:
+          type: string
+          format: date-time
+
+        timezone:
+          type: string
+          example: Asia/Kolkata
+
+        status:
+          $ref: "#/components/schemas/ReminderStatus"
+
+        notificationSent:
+          type: boolean
+
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+        snoozeUntil:
+          type: string
+          format: date-time
+          nullable: true
+
+        responseMessage:
+          type: string
+          nullable: true
+
+        createdAt:
+          type: string
+          format: date-time
+
+        updatedAt:
+          type: string
+          format: date-time
+
+    SnoozeReminderRequest:
+      type: object
+
+      required:
+        - snoozeUntil
+
+      properties:
+        snoozeUntil:
+          type: string
+          format: date-time
+          example: 2026-05-21T10:30:00Z
+
+    UpdateReminderConfigRequest:
+      type: object
+
+      properties:
+        foodType:
+          type: string
+          enum:
+            - BEFORE_FOOD
+            - AFTER_FOOD
+            - WITH_FOOD
+
+        type:
+          $ref: "#/components/schemas/ReminderType"
+
+        refillAlertBeforeDays:
+          type: integer
+          example: 1
+
+        status:
+          $ref: "#/components/schemas/ReminderStatus"
+
+        scheduledAt:
+          type: string
+          format: date-time
+
+        timezone:
+          type: string
+          example: Asia/Kolkata
+
+        notificationSent:
+          type: boolean
+
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+        snoozeUntil:
+          type: string
+          format: date-time
+          nullable: true
+
+        responseMessage:
+          type: string
+          nullable: true
+
+paths:
+  /medication-reminders/today:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get today reminders
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Today reminders fetched successfully
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/upcoming:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get upcoming reminders
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Upcoming reminders fetched successfully
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/history:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get reminder history
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Reminder history fetched successfully
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/missed:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get missed reminders
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Missed reminders fetched successfully
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/refill-alerts:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get refill alerts
+
+      security:
+        - bearerAuth: []
+
+      responses:
+        "200":
+          description: Refill alerts fetched successfully
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/occurrences/{id}/complete:
+    post:
+      tags:
+        - Medication Reminder
+
+      summary: Complete reminder occurrence
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/OccurrenceId"
+
+      responses:
+        "200":
+          description: Reminder completed successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/occurrences/{id}/skip:
+    post:
+      tags:
+        - Medication Reminder
+
+      summary: Skip reminder occurrence
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/OccurrenceId"
+
+      responses:
+        "200":
+          description: Reminder skipped successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/occurrences/{id}/snooze:
+    post:
+      tags:
+        - Medication Reminder
+
+      summary: Snooze reminder occurrence
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/OccurrenceId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SnoozeReminderRequest"
+
+      responses:
+        "200":
+          description: Reminder snoozed successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReminderOccurrence"
+
+  /medication-reminders/config/{id}:
+    get:
+      tags:
+        - Medication Reminder
+
+      summary: Get reminder config
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/ReminderConfigId"
+
+      responses:
+        "200":
+          description: Reminder config fetched successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReminderConfig"
+
+    put:
+      tags:
+        - Medication Reminder
+
+      summary: Update reminder config
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/ReminderConfigId"
+
+      requestBody:
+        required: true
+
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateReminderConfigRequest"
+
+      responses:
+        "200":
+          description: Reminder config updated successfully
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReminderConfig"
+
+    delete:
+      tags:
+        - Medication Reminder
+
+      summary: Delete reminder config
+
+      security:
+        - bearerAuth: []
+
+      parameters:
+        - $ref: "#/components/parameters/ReminderConfigId"
+
+      responses:
+        "200":
+          description: Reminder config deleted successfully

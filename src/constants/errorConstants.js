@@ -81,6 +81,10 @@ const errorConstants = Object.freeze({
   MAX_MEDICATION_TIME: "Maximum medication time exceeded",
   UNIT_REQUIRED: "Unit is required",
   INVALID_UNIT: "Invalid Unit allowd only PILLS , ML , DROPS , UNITS",
+  REMINDER_NOT_FOUND: "Reminder not found",
+  INVALID_REMINDER_ID: "Invalid reminder id",
+  FOOD_TYPE_REQUIRED: "Food type is required",
+  INVALID_ID: "Invalid id",
 });
 
 module.exports = { errorConstants };

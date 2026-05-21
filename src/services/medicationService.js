@@ -2,6 +2,8 @@ const { errorConstants } = require("../constants/errorConstants");
 const { NotFoundException } = require("../exceptions/appError");
 const medicationRepository = require("../repositories/medicationRepository");
 const patientRepository = require("../repositories/patientRepository");
+const { generateReminderTimes } = require("../utils/reminderGenerator");
+const medicationReminderRepository = require("../repositories/medicationReminderRepository");
 
 const {
   createMedicationSchema,
@@ -16,25 +18,34 @@ class MedicationService {
   // create
   async createMedication(userId, payload) {
     const validData = await validateSchema(createMedicationSchema, payload);
-
     const patient = await patientRepository.findById(userId);
-
     if (!patient) {
       throw new NotFoundException(errorConstants.PATIENT_NOT_FOUND);
     }
-
     const { endDate, remainingQuantity, dailyConsumption } = calculateMedicationValues(validData);
-
-    return medicationRepository.create({
+    // create medication
+    const createdMedication = await medicationRepository.create({
       userId,
       patientCode: patient.patientCode,
-
       ...validData,
-
       endDate,
       remainingQuantity,
       dailyConsumption,
     });
+
+    // generate reminder entries
+    const reminders = generateReminderTimes({
+      ...createdMedication,
+
+      foodFrequency: validData.foodFrequency,
+    });
+
+    // bulk insert reminders
+    if (reminders.length > 0) {
+      await medicationReminderRepository.bulkCreate(reminders);
+    }
+
+    return createdMedication;
   }
 
   // update

@@ -61,19 +61,21 @@ class MedicationRepository {
     return result[0] || null;
   }
 
-  async findById(id) {
-    console.log("id", id);
+  async findById(id, userId) {
     const result = await db
       .select()
       .from(medication)
-      .where(and(eq(medication.id, id), eq(medication.softDelete, false)))
+      .where(
+        and(
+          eq(medication.id, id),
+          eq(medication.userId, String(userId)),
+          eq(medication.softDelete, false),
+        ),
+      )
       .limit(1);
-
-    console.log("DB RESULT:", result);
 
     return result[0] || null;
   }
-
   async findAllWithFilters({ filter = {}, sort = {} }) {
     const where = buildMedicationFilters(filter);
 

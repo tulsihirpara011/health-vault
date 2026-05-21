@@ -64,6 +64,20 @@
       "when": 1779098394569,
       "tag": "0008_harsh_warstar",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1779284945185,
+      "tag": "0009_light_microbe",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1779339955507,
+      "tag": "0010_easy_otto_octavius",
+      "breakpoints": true
     }
   ]
 }

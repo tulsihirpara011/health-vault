@@ -4,7 +4,8 @@ const http = require("http");
 
 const cors = require("cors");
 const express = require("express");
-require("./jobs/medicationCron");
+require("./cron/reminderScheduler");
+require("./cron/missedReminderCron");
 
 const { pool } = require("./configs/db");
 const { env } = require("./configs/env");
