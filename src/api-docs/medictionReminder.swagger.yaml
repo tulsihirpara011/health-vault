@@ -266,13 +266,6 @@ paths:
         "200":
           description: Upcoming reminders fetched successfully
 
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ReminderOccurrence"
-
   /medication-reminders/history:
     get:
       tags:
@@ -286,13 +279,6 @@ paths:
       responses:
         "200":
           description: Reminder history fetched successfully
-
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ReminderOccurrence"
 
   /medication-reminders/missed:
     get:
@@ -308,13 +294,6 @@ paths:
         "200":
           description: Missed reminders fetched successfully
 
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ReminderOccurrence"
-
   /medication-reminders/refill-alerts:
     get:
       tags:
@@ -328,13 +307,6 @@ paths:
       responses:
         "200":
           description: Refill alerts fetched successfully
-
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ReminderOccurrence"
 
   /medication-reminders/occurrences/{id}/complete:
     post:
@@ -353,11 +325,6 @@ paths:
         "200":
           description: Reminder completed successfully
 
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReminderOccurrence"
-
   /medication-reminders/occurrences/{id}/skip:
     post:
       tags:
@@ -374,11 +341,6 @@ paths:
       responses:
         "200":
           description: Reminder skipped successfully
-
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReminderOccurrence"
 
   /medication-reminders/occurrences/{id}/snooze:
     post:
@@ -405,11 +367,6 @@ paths:
         "200":
           description: Reminder snoozed successfully
 
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReminderOccurrence"
-
   /medication-reminders/config/{id}:
     get:
       tags:
@@ -426,11 +383,6 @@ paths:
       responses:
         "200":
           description: Reminder config fetched successfully
-
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReminderConfig"
 
     put:
       tags:
@@ -455,11 +407,6 @@ paths:
       responses:
         "200":
           description: Reminder config updated successfully
-
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ReminderConfig"
 
     delete:
       tags:
